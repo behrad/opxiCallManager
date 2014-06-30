@@ -1,0 +1,92 @@
+<%@ page import="com.basamadco.opxi.callmanager.ServiceFactory" %>
+<%@ page import="com.basamadco.opxi.callmanager.entity.UserAgent" %>
+<%@ page import="com.basamadco.opxi.callmanager.logging.AgentActivityLogger" %>
+<%@ page import="com.basamadco.opxi.callmanager.pool.Agent" %>
+<%@ page import="com.basamadco.opxi.callmanager.sip.util.SipUtil" %>
+<%@ page import="com.basamadco.opxi.callmanager.util.OpxiToolBox" %>
+<%@ page import="java.util.Collection" %>
+<%@ page import="java.util.Iterator" %>
+<%@ page import="com.basamadco.opxi.callmanager.sip.util.SIPConstants" %>
+<%@ page import="com.basamadco.opxi.callmanager.entity.UserNotAvailableException" %>
+<%@ page import="com.basamadco.opxi.callmanager.sip.presence.NoActivePublishContextException" %>
+<% try { %>
+
+<p>List of registered agents to call manager</p>
+
+<%
+    //Collection messages = (Collection)request.getAttribute( "queueList" );
+    ServiceFactory sf = ( (ServiceFactory) application.getAttribute( "com.basamadco.opxi.callmanager.ServiceFactory" ) );
+    Collection messages = sf.getAgentService().agents();
+%>
+<table width="30%" class="mainCon" cellpadding="0" cellspacing="0">
+    <tr>
+        <td class="titrecon">#</td>
+        <td class="titrecon">AOR</td>
+        <td class="titrecon">Tel#</td>
+        <td class="titrecon">Open Calls</td>
+        <td class="titrecon">Idle Time</td>
+        <td class="titrecon">Contact</td>
+        <td class="titrecon">Status</td>
+        <td class="titrecon">Online/Offline</td>
+        <td class="titrecon">Pools</td>
+        <td class="titrecon">Activity Log</td>
+        <!--<td class="titrecon">pool type</td>-->
+    </tr>
+    <%
+        int count = 1;
+        for (Iterator i = messages.iterator(); i.hasNext();) {
+//                Agent pool = (Agent)i.next();
+//                for( Iterator p = pool.agentView().iterator(); p.hasNext(); ) {
+            Agent agent = (Agent) i.next();
+//            UserAgent ua = sf.getLocationService().findUserAgent( SipUtil.getName( agent.getAOR() ), SipUtil.getDomain( agent.getAOR() ) );
+            UserAgent ua = null;
+            try {
+                ua = sf.getPresenceService().getPresenceUA( agent.getAOR() );
+            } catch ( UserNotAvailableException e ) {
+                ua = new UserAgent( "---", "---" );
+                ua.setBasic( "---" );
+                ua.setNote( "---" );                
+            } catch( NoActivePublishContextException e ) {
+                ua = new UserAgent( "---", "---" );
+                ua.setBasic( "Inactive Context" );
+                ua.setNote(  "Inactive Context" );
+            }
+    %>
+    <tr>
+        <td class="rowdef"><%=count++%>
+        </td>
+        <td class="rowdef"><%=agent.getAOR()%>
+        </td>
+        <td class="rowdef"><%=agent.getTelephoneNumber()%>
+        </td>
+        <td class="rowdef"><%=agent.openCalls()%>
+        </td>
+        <td class="rowdef"><%=OpxiToolBox.duration( agent.idleTime() )%>
+        </td>
+        <td class="rowdef"><%=agent.getRegistration().getLocation().getURI()%>
+        </td>
+        <td class="rowdef" align="center"><font color="green"><%=
+        ( agent.isActive() ?   ua.getNote() : ua.getNote() ) %></font>
+        </td>
+        <td class="rowdef" align="center"><%=
+        ( SIPConstants.BASIC_STATUS_OPEN.equalsIgnoreCase( ua.getBasic() ) ? "Online" : "<font color=\"red\">Offline</font>" )%>
+        </td>
+        <td class="rowdef" align="center"><%=agent.getPoolMemberships()%>
+        </td>
+        <td class="rowdef" align="center"><a target="_blank"
+                                             href="<%=request.getContextPath()%>/log?type=<%=AgentActivityLogger.class.getName()%>&logVOId=<%=agent.getActivityLogId()%>">view</a>
+        </td>
+    </tr>
+    <%
+        }
+//            }
+    %>
+</table>
+<%
+} catch ( Exception e ) {
+%>
+<div align="center">Error Message:<p class="meg">&nbsp;<%=e%>
+</p></div>
+<%
+    }
+%>

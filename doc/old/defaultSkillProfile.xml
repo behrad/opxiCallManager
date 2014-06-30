@@ -1,0 +1,11 @@
+<?xml version='1.0' ?>
+<opxiCMEntityProfile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://opxi.basamadco.com/opxiCMEntityProfile.xsd" xsi:schemaLocation="http://opxi.basamadco.com/opxiCMEntityProfile.xsd file://c:\java\workspace\opxiCallManager\src\resources\opxiCMEntityProfile.xsd">
+	<PoolTargetProfile DN="${DN}" Type="${TYPE}">
+		<QueueProfile WaitingAudio="http://emptyURI" MaxDepth="10" MaxWaitingTime="30"/>
+		<SkillProfile SSSC="1.0" PSSC="1.0">
+			<MatchingRule>
+				<URI>matching-rule.xml</URI>
+			</MatchingRule>
+		</SkillProfile>
+	</PoolTargetProfile>
+</opxiCMEntityProfile>

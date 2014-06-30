@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration
+        PUBLIC "-//Hibernate/Hibernate Configuration DTD//EN"
+        "http://hibernate.sourceforge.net/hibernate-configuration-2.0.dtd">
+<hibernate-configuration>
+    <session-factory>
+        <!-- Data Source -->
+        <property name="connection.datasource">jdbc/mysql</property>
+
+        <property name="connection.autoReconnect">true</property>
+        <property name="connection.autoReconnectForPools">true</property>
+        <property name="connection.is-connection-validation-required">true</property>
+
+        <!-- Database Settings -->
+        <property name="dialect">net.sf.hibernate.dialect.MySQLDialect</property>
+
+        <!-- Cache settings -->
+        <!--<property name="cache.provider_class">net.sf.hibernate.cache.HashtableCacheProvider</property>-->
+
+        <!-- Transaction API -->
+        <property name="transaction.manager_lookup_class">
+            net.sf.hibernate.transaction.WebSphereTransactionManagerLookup
+        </property>
+
+        <!-- Mapping files -->
+        <mapping resource="com/basamadco/opxi/callmanager/entity/Domain.hbm.xml" />
+        <mapping resource="com/basamadco/opxi/callmanager/entity/UserAgent.hbm.xml" />
+        <mapping resource="com/basamadco/opxi/callmanager/entity/Subscription.hbm.xml" />
+        <mapping resource="com/basamadco/opxi/callmanager/entity/Registration.hbm.xml" />
+
+
+    </session-factory>
+
+</hibernate-configuration>

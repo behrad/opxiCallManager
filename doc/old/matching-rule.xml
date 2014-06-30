@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE matching-rule
+        PUBLIC "-//AC and C Basamad Co//DTD SIP Matching Rule 1.0//EN"
+        "http://www.basamadco.com/dtd/matching-rule-1.0.dtd">
+
+<matching-rule>
+    <and>
+        <equal>
+            <group attribute="name" />
+            <request attribute="uri.user"/>
+        </equal>
+    </and>
+</matching-rule>

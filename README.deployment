@@ -1,0 +1,42 @@
+OpxiCallManager 0.1 Test Release (Ac&c Basamad co.)
+---------------------------------------------------
+OpxiCallManager is a SIP (RFC 3261) compliant proxy server which
+implements simple registrar and presence functionality. This
+product is on top of SUN Microsystems Inc. Sip Servlet (JSR116)
+specification.
+
+Deployment Requirements:
+------------------------
+To deploy the OpxiCallManager SIP server you should have
+   
+   1. An RDBMS software (MySQL 4.0.17+ is just supported for now) 
+   (required)
+   
+   2. A Directory (LDAP) Server (such as MS Active Directory) to
+      enable user authentication. (optional)
+      
+   3. A JSR 116 compliant Sip Servlet container (required)
+   
+installed on your machine.
+
+
+
+Deploy Configuration:
+---------------------
+   1. Database Configuration:
+      Please run "OpxiCallManager-mysql.sql" sql script in your 
+      database engine.
+      
+   2. Application Configuration:
+      Please edit "opxiCallManager.properties" property file to 
+      set your environment. There's a template file in the
+      distribution root directory. You can edit it and replace it in
+      application sar file (in WEB-INF/classes directory) with WinRAR 
+      (or any archiving) tool.
+      
+   3. Log4J Configuration:
+      Please append contents of "log4j.properties" file to your server
+      log4j properties file. 
+         
+--
+JRad (behrad@dev.java.net)

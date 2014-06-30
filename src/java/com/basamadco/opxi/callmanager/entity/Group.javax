@@ -1,0 +1,17 @@
+package com.basamad.opxicm.entity;
+
+import com.basamad.opxicm.qms.PoolTarget;
+
+/**
+ * This entity represents opxi group instances.
+ * Opxi groups usually are read from a DIRECTORY server.
+ *  
+ * @author Jrad
+ *
+ * @ hibernate.joined-subclass table="Group"
+ * @ hibernate.joined-subclass-key column="id"
+ *
+ */
+public class Group extends PoolTarget {
+
+}

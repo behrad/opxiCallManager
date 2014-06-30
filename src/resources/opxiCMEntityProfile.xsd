@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xsd:schema id="opxiCMEntityProfile" targetNamespace="http://opxi.basamadco.com/opxiCMEntityProfile.xsd"
+            elementFormDefault="qualified" xmlns="http://opxi.basamadco.com/opxiCMEntityProfile.xsd"
+            xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <!-- opxiCMEntityProfile schema root element -->
+    <xsd:element name="opxiCMEntityProfile">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:choice>
+                    <xsd:element ref="AgentProfile" minOccurs="1" maxOccurs="1"/>
+                    <xsd:element ref="PoolTargetProfile" minOccurs="1" maxOccurs="1"/>
+                </xsd:choice>
+                <xsd:element ref="RuleSet" minOccurs="0" maxOccurs="unbounded"/>
+                <xsd:element ref="ApplicationIntegration" minOccurs="0" maxOccurs="1"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <!-- opxiCMEntityProfile schema root element -->
+    <xsd:element name="AgentProfile">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="GreetingAudio" type="GreetingAudioType" minOccurs="0" maxOccurs="unbounded"/>
+                <xsd:element name="SkillScore" type="SkillScoreType" minOccurs="0" maxOccurs="unbounded"/>
+                <xsd:element name="TrunkAccess" type="TrunkAccessType" minOccurs="0" maxOccurs="unbounded"/>
+            </xsd:sequence>
+            <xsd:attribute name="DN" type="xsd:string" use="required"/>
+            <xsd:attribute name="MaxOpenCalls" type="xsd:nonNegativeInteger" default="1" use="optional"/>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="Repeat">
+        <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+                <xsd:enumeration value="DAILY"/>
+                <xsd:enumeration value="WEEKLY"/>
+                <xsd:enumeration value="MONTHLY"/>
+                <xsd:enumeration value="YEARLY"/>
+            </xsd:restriction>
+        </xsd:simpleType>
+    </xsd:element>
+
+    <xsd:complexType name="GreetingAudioType">
+        <xsd:sequence/>
+        <xsd:attribute name="Src" type="xsd:string" use="required"/>
+        <xsd:attribute name="Exp" type="xsd:string" use="optional" default="NONE"/>
+    </xsd:complexType>
+
+    <xsd:complexType name="TrunkAccessType">
+        <xsd:sequence/>
+        <xsd:attribute name="name" type="xsd:string" use="required"/>
+    </xsd:complexType>
+
+    <xsd:complexType name="SkillScoreType">
+        <xsd:sequence/>
+        <xsd:attribute name="SkillName" type="xsd:string" use="required"/>
+        <xsd:attribute name="Score" type="xsd:float" use="optional" default="1.0"/>
+    </xsd:complexType>
+    <xsd:element name="PoolTargetProfile">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="QueueProfile" minOccurs="0" maxOccurs="unbounded"/>
+                <xsd:choice>
+                    <xsd:element ref="GroupProfile" minOccurs="0"/>
+                    <xsd:element ref="SkillProfile" minOccurs="0"/>
+                </xsd:choice>
+            </xsd:sequence>
+            <xsd:attribute name="DN" type="xsd:string" use="required"/>
+            <xsd:attribute name="Type" type="xsd:string"/>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="GroupProfile">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="Repeat" minOccurs="0" maxOccurs="1"/>
+                <xsd:element ref="Parameter" minOccurs="0" maxOccurs="unbounded"/>
+            </xsd:sequence>
+            <xsd:attribute name="from" type="xsd:dateTime"/>
+            <xsd:attribute name="to" type="xsd:dateTime"/>
+
+        </xsd:complexType>
+    </xsd:element>
+
+
+    <xsd:element name="SkillProfile">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="MatchingRule" type="MatchingRuleType"/>
+            </xsd:sequence>
+            <xsd:attribute name="PSSC" type="xsd:float" use="required"/>
+            <xsd:attribute name="SSSC" type="xsd:float" use="required"/>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="QueueProfile">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="SupportGroup" minOccurs="0" maxOccurs="unbounded"/>
+            </xsd:sequence>
+            <xsd:attribute name="Exp" type="xsd:string" use="optional" default="NONE"/>
+            <xsd:attribute name="MaxDepth" type="xsd:nonNegativeInteger" use="required"/>
+            <xsd:attribute name="MaxWaitingTime" type="xsd:nonNegativeInteger" use="required"/>
+            <xsd:attribute name="WaitingAudio" type="xsd:string" use="required"/>
+            <xsd:attribute name="IdleTimeToSchedule" type="xsd:nonNegativeInteger" default="0"/>
+            <xsd:attribute name="MaxCallDuration" type="xsd:nonNegativeInteger" default="0"/>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:complexType name="MatchingRuleType">
+        <xsd:sequence>
+            <xsd:element ref="Parameter" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+        <xsd:attribute name="ClassName" type="xsd:string" use="required"/>
+    </xsd:complexType>
+    <xsd:element name="Parameter">
+        <xsd:complexType>
+            <xsd:attribute name="name" type="xsd:string"/>
+            <xsd:attribute name="value" type="xsd:string"/>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="ApplicationIntegration">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="Application" minOccurs="1" maxOccurs="unbounded"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="Application">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="Participation" minOccurs="0" maxOccurs="unbounded"/>
+                <xsd:element ref="Parameter" minOccurs="0" maxOccurs="unbounded"/>
+            </xsd:sequence>
+            <xsd:attribute name="name" type="xsd:string" use="required"/>
+            <xsd:attribute name="priority" type="xsd:nonNegativeInteger" default="1"/>
+            <xsd:attribute name="expression" type="xsd:string" default="false"/>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="Participation">
+        <xsd:complexType>
+            <xsd:attribute name="party" type="xsd:string"/>
+            <xsd:attribute name="role" type="xsd:string"/>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="RuleSet">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="Rule" minOccurs="0" maxOccurs="unbounded"/>
+            </xsd:sequence>
+            <xsd:attribute name="TargetService" type="xsd:string" use="required"/>
+            <xsd:attribute name="Priority" type="xsd:nonNegativeInteger" default="1"/>
+        </xsd:complexType>
+    </xsd:element>
+
+
+    <xsd:element name="SupportGroup">
+        <xsd:complexType>
+            <xsd:attribute name="Delay" type="xsd:nonNegativeInteger" use="required"/>
+            <xsd:attribute name="Name" type="xsd:string" use="required"/>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="Rule">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="Parameter" minOccurs="0" maxOccurs="unbounded"/>
+            </xsd:sequence>
+            <xsd:attribute name="Name" type="xsd:string" use="required"/>
+            <xsd:attribute name="OnEvent" type="xsd:string" use="required"/>
+            <xsd:attribute name="Mode" type="xsd:string" use="required"/>
+            <xsd:attribute name="Priority" type="xsd:nonNegativeInteger" default="1"/>
+        </xsd:complexType>
+    </xsd:element>
+
+</xsd:schema>

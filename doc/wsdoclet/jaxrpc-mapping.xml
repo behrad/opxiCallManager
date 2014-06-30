@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<java-wsdl-mapping
+  xmlns="http://java.sun.com/xml/ns/j2ee"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee
+  http://java.sun.com/xml/ns/j2ee/j2ee_jaxrpc_mapping_1_1.xsd"
+  version="1.1"> 
+    <package-mapping>
+      <package-type>com.basamadco.opxi.callmanager.util</package-type>
+      <namespaceURI>urn-com-basamadco-opxi-callmanager-util</namespaceURI>
+    </package-mapping>
+    <package-mapping>
+      <package-type>com.basamadco.opxi.callmanager.web.services</package-type>
+      <namespaceURI>http://opxi.basamadco.com/callmanager/services</namespaceURI>
+    </package-mapping>
+	<java-xml-type-mapping>
+	  <java-type>HelloBean</java-type>
+	  <root-type-qname>
+	    com.basamadco.opxi.callmanager.web.services.HelloBean
+	  </root-type-qname>
+	  <!-- qname support other than complex type not yet added -->	  
+	  <qname-scope>complexType</qname-scope>	  
+      <variable-mapping>
+       <java-variable-name>message</java-variable-name>
+       <data-member/> <!-- FIXME -->       
+       <xml-element-name>message</xml-element-name>
+      </variable-mapping>	   
+      <variable-mapping>
+       <java-variable-name>loveMe</java-variable-name>
+       <data-member/> <!-- FIXME -->       
+       <xml-element-name>loveMe</xml-element-name>
+      </variable-mapping>	   
+	</java-xml-type-mapping>
+	<!-- service interface mappings are still lacking -->
+	<!-- service endpoint mappings are still lacking -->
+</java-wsdl-mapping>

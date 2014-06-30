@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE taglib PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.1//EN"
+        "http://java.sun.com/j2ee/dtds/web-jsptaglibrary_1_2.dtd">
+<taglib>
+
+    <tlibversion>1.0</tlibversion>
+    <jspversion>1.2</jspversion>
+    <shortname>collections</shortname>
+    <uri>http://www.objectj.com/taglibs</uri>
+    <info>A Collection Utility tag library from Behrad Zari</info>
+
+    <tag>
+        <name>isEmpty</name>
+        <tagclass>com.objectj.web.taglib.collections.EmptyTag</tagclass>
+        <bodycontent>JSP</bodycontent>
+        <info>Renders its content if a collection is empty.</info>
+        <attribute>
+            <name>name</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>property</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+    <tag>
+        <name>notEmpty</name>
+        <tagclass>com.objectj.web.taglib.collections.NotEmptyTag</tagclass>
+        <bodycontent>JSP</bodycontent>
+        <info>Renders its content if a collection is not empty.</info>
+        <attribute>
+            <name>name</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>property</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+</taglib>

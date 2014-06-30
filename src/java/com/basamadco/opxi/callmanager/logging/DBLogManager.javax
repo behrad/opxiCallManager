@@ -1,0 +1,79 @@
+package com.basamad.opxicm.logging;
+
+import net.sf.hibernate.HibernateException;
+import net.sf.hibernate.Session;
+import net.sf.hibernate.SessionFactory;
+import net.sf.hibernate.Transaction;
+import java.util.logging.Logger;
+
+import java.io.Serializable;
+
+public class DBLogManager extends AsyncLogManager {
+	
+	private static final Logger logger = Logger.getLogger( DBLogManager.class );
+	
+	private SessionFactory db;
+	
+	public DBLogManager( SessionFactory db ) {		
+		this.db = db;
+	}
+	
+	public LogValueObject getLogValueObject( Class logValueObjectClass, Serializable id ) throws OpxiLogException {
+		Session s = null;	
+		LogValueObject logValueObject = null;
+		try {
+			s = db.openSession();
+			logValueObject = (LogValueObject)s.get( logValueObjectClass, id );
+			s.flush();
+			s.close();			
+		} catch( HibernateException e ) {
+			logger.error( e );			
+			try {
+				s.close();
+			} catch( HibernateException he ) {				
+				logger.error( he );
+			}			
+		}
+		return logValueObject;
+	}
+
+    protected void handleRefreshEvent() throws OpxiLogException {
+        Session s = null;
+		try {
+            Object entity = getLogEvent().getValueObject();
+            s = db.openSession();
+			Transaction t = s.beginTransaction();
+            s.update( entity );
+			t.commit();
+			s.close();
+		} catch( HibernateException e ) {
+			logger.error( e );
+			try {
+				s.close();
+			} catch( HibernateException he ) {
+				logger.error( he );
+			}
+			throw new OpxiLogException( e );
+		}
+    }
+
+    protected void handleLogEvent() throws OpxiLogException {
+		Session s = null;
+		try {
+            Object entity = getLogEvent().getValueObject();
+            s = db.openSession();
+			Transaction t = s.beginTransaction();
+            s.save( entity );
+			t.commit();
+			s.close();
+		} catch( HibernateException e ) {
+			logger.error( e );
+			try {
+				s.close();
+			} catch( HibernateException he ) {
+				logger.error( he );
+			}
+			throw new OpxiLogException( e );
+		}
+	}
+}

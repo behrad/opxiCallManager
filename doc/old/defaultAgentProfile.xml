@@ -1,0 +1,6 @@
+<?xml version='1.0' ?>
+<opxiCMEntityProfile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://opxi.basamadco.com/opxiCMEntityProfile.xsd" xsi:schemaLocation="http://opxi.basamadco.com/opxiCMEntityProfile.xsd file://c:\java\workspace\opxiCallManager\src\resources\opxiCMEntityProfile.xsd">
+	<AgentProfile MaxOpenCalls="1" DN="${DN}">
+		<GreetingAudio Src="http://emptyURI"/>
+	</AgentProfile>	
+</opxiCMEntityProfile>

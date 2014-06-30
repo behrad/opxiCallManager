@@ -1,0 +1,98 @@
+package com.basamad.opxicm.logging;
+
+
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+
+/**
+ * Core OpxiCallManager Logging Entity<br>
+ * Any entity should extend this class to be logg-enablad in the
+ * opxiCallManager system. Particular extensions should define their
+ * fields to be logged, according to the JavaBeans Specification.<br>
+ * This way OpxiCallManager logging system will result an XML based
+ * tree structure schema.
+ * 
+ * <i>note: To create nesting elements in logging schemes you should declare
+ * an instance property of LogValueObject type or any subtypes.</i>
+ * 
+ * @author Jrad
+ * @version 1.0
+ */
+public abstract class LogValueObject {
+
+    private String id;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId( String id ) {
+        this.id = id;
+    }
+
+    /**
+	 * Converts current entity into an XML based tagged structure by tranversing
+	 * all instance property getter methods.
+	 * 
+	 * @return string representation of the XML based instance tree
+	 */
+	public String toXML() {
+		return toXML( this );
+	}
+	
+	private String toXML( Object o ) {
+		if( !(o instanceof LogValueObject) )
+			return "";		
+		
+		StringBuffer element = new StringBuffer();		
+		element.append( "<" );
+		StringBuffer entityName = new StringBuffer( o.getClass().getName() );
+		entityName = entityName.delete( 0, entityName.lastIndexOf( "." ) + 1 );
+		entityName.setCharAt( 0, Character.toLowerCase( entityName.charAt( 0 ) ) );
+		element.append( entityName.toString() + " " );
+		Method[] methods = o.getClass().getMethods();
+		List nestedLogs = new ArrayList();
+		for( int i = 0; i < methods.length; i++ ) {
+			Method m = methods[ i ];			
+			if( m.getName().startsWith( "get" ) && m.getName().indexOf( "Class" ) < 0 && m.getName().indexOf( "Parent" ) < 0 ) {
+				StringBuffer namee = new StringBuffer( m.getName().split( "get" )[1] );
+				namee.setCharAt( 0, Character.toLowerCase( namee.charAt( 0 ) ) );
+				String name = namee.toString();
+				String value = "";			
+				try {
+					Object fo = m.invoke( o, null );
+					if( fo != null ) {					
+						if( fo instanceof LogValueObject ) {					
+							nestedLogs.add( ((LogValueObject)fo).toXML() );
+						} if( fo instanceof Collection ) {					
+							Iterator fos = ((Collection)fo).iterator();
+							while( fos.hasNext() ) {
+								nestedLogs.add( toXML( fos.next() ) );
+							}
+						} else {
+							value = fo.toString();
+							element.append( name + "=\"" );
+							element.append( value + "\" " );
+						}					
+					}
+				} catch ( Exception e ) {
+					e.printStackTrace();
+				}
+			}
+		}
+		if( nestedLogs.size() > 0 ) {
+			element.append( ">" );			
+			for( int i = 0; i < nestedLogs.size(); i++ ) {
+				element.append( nestedLogs.get(i) );
+			}			
+			element.append( "</" + entityName.toString() + ">" );
+		} else
+			element.append( "/>" );
+		
+		return element.toString();
+	}
+		
+}

@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xsd:schema id="opxiActivityLog" targetNamespace="http://opxi.basamadco.com/opxiActivityLog.xsd"
+            elementFormDefault="qualified" xmlns="http://opxi.basamadco.com/opxiActivityLog.xsd"
+            xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:NS="http://opxi.basamadco.com/opxiActivityLog.xsd">
+    <!-- OpxiActivityLog schema root element -->
+    <xsd:element name="opxiActivityLog">
+        <xsd:complexType>
+            <xsd:choice>
+                <xsd:element ref="AgentActivity" minOccurs="0"/>
+                <xsd:element ref="ServiceActivity" minOccurs="0"/>
+            </xsd:choice>
+            <xsd:attribute name="id" type="xsd:string" use="required"/>
+        </xsd:complexType>
+    </xsd:element>
+    <!-- OpxiActivityLog schema root element -->
+    <xsd:element name="ServiceActivity">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="IncomingCalls" type="Statistics"/>
+                <xsd:element name="LocalCalls" type="Statistics" minOccurs="0"/>
+                <xsd:element name="OutgoingCalls" type="Statistics" minOccurs="0"/>
+                <xsd:element name="InstantMessaging" type="Statistics" minOccurs="0"/>
+                <xsd:element name="OnlineAgents" type="Statistics" minOccurs="0"/>
+                <xsd:element name="UnsuccessfulHandling" type="CountedItem" minOccurs="0" maxOccurs="unbounded"/>
+                <xsd:element name="QueueService" type="QueueService" minOccurs="0" maxOccurs="unbounded"/>
+                <xsd:element name="ApplicationService" type="ApplicationService" minOccurs="0" maxOccurs="unbounded"/>
+                <xsd:element name="TrunkSvc" type="TrunkService" minOccurs="0" maxOccurs="1"/>
+            </xsd:sequence>
+            <xsd:attributeGroup ref="TimeInterval"/>
+            <xsd:attribute name="CallAttempts" type="xsd:nonNegativeInteger"/>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="AgentActivity">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="Presence" type="Presence" minOccurs="0" maxOccurs="unbounded"/>
+                <xsd:element name="Service" type="Service" minOccurs="0" maxOccurs="unbounded"/>
+                <xsd:element name="AnsweredCalls" type="Statistics" minOccurs="0"/>
+                <xsd:element name="IncomingCalls" type="Statistics" minOccurs="0"/>
+                <xsd:element name="OutgoingCalls" type="Statistics" minOccurs="0"/>
+                <xsd:element name="TrunkSvc" type="TrunkService" minOccurs="0"/>
+                <xsd:element name="RegistrarSvc" type="RegistrarService" minOccurs="0" maxOccurs="1"/>
+                <xsd:element name="Reports" type="Reports" minOccurs="0" maxOccurs="1"/>
+                <xsd:element name="Polls" type="Polls" minOccurs="0" maxOccurs="1"/>
+            </xsd:sequence>
+            <xsd:attribute name="Agent" type="xsd:string" use="required"/>
+            <xsd:attribute name="Cause" type="xsd:string"/>
+            <!-- xsd:attribute name="CallsOutbound" type="xsd:nonNegativeInteger"/ -->
+            <xsd:attribute name="AssignedCalls" type="xsd:nonNegativeInteger" use="required"/>
+            <xsd:attribute name="RejectedCalls" type="xsd:nonNegativeInteger" use="required"/>
+            <!-- xsd:attribute name="CallsAnswered" type="xsd:nonNegativeInteger" use="required"/ -->
+            <xsd:attribute name="ForwardedCalls" type="xsd:nonNegativeInteger"/>
+            <xsd:attribute name="HeldCalls" type="xsd:nonNegativeInteger"/>
+            <xsd:attribute name="NotAnsweredCalls" type="xsd:nonNegativeInteger"/>
+            <xsd:attributeGroup ref="TimeInterval"/>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:complexType name="Presence">
+        <xsd:sequence>
+            <xsd:element name="Comment" type="Comment" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+        <xsd:attribute name="MsgIndex" type="xsd:nonNegativeInteger"/>
+        <xsd:attribute name="State" type="xsd:string"/>
+        <xsd:attribute name="Open" type="xsd:boolean" use="required"/>
+        <xsd:attribute name="Date" type="xsd:dateTime" use="required"/>
+        <xsd:attribute name="Contact" type="xsd:string"/>
+    </xsd:complexType>
+    <xsd:complexType name="Service">
+        <xsd:sequence>
+            <xsd:element name="Usage" type="ServiceUsage" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+        <xsd:attribute name="Name" type="xsd:string" use="required"/>
+        <xsd:attribute name="Count" type="xsd:nonNegativeInteger" use="required"/>
+    </xsd:complexType>
+    <xsd:complexType name="ServiceUsage">
+        <xsd:sequence>
+            <xsd:element name="RefItem" minOccurs="0" maxOccurs="unbounded" type="Reference"/>
+        </xsd:sequence>
+        <xsd:attribute name="Date" type="xsd:dateTime" use="required"/>
+    </xsd:complexType>
+    <xsd:complexType name="Statistics">
+        <xsd:sequence/>
+        <xsd:attribute name="Count" type="xsd:nonNegativeInteger"/>
+        <xsd:attribute name="Sum" type="xsd:float" use="required"/>
+        <xsd:attribute name="Max" type="xsd:float" use="required"/>
+        <xsd:attribute name="Min" type="xsd:float" use="required"/>
+        <xsd:attribute name="Mean" type="xsd:float" use="required"/>
+        <xsd:attribute name="StandardDeviation" type="xsd:float"/>
+        <xsd:attribute name="Variance" type="xsd:float"/>
+    </xsd:complexType>
+    <xsd:complexType name="Reference">
+        <xsd:sequence/>
+        <xsd:attribute name="Name" type="xsd:string" use="required"/>
+        <xsd:attribute name="Value" type="xsd:string" use="required"/>
+    </xsd:complexType>
+
+    <xsd:complexType name="Comment">
+        <xsd:sequence/>
+        <xsd:attribute name="Message" type="xsd:string" use="required"/>
+        <xsd:attribute name="Time" type="xsd:dateTime" use="required"/>
+    </xsd:complexType>
+    <xsd:attributeGroup name="TimeInterval">
+        <xsd:attribute name="Begin" type="xsd:dateTime"/>
+        <xsd:attribute name="End" type="xsd:dateTime"/>
+    </xsd:attributeGroup>
+    <xsd:complexType name="CountedItem">
+        <xsd:sequence/>
+        <xsd:attribute name="Name" type="xsd:string"/>
+        <xsd:attribute name="Description" type="xsd:string"/>
+        <xsd:attribute name="Count" type="xsd:nonNegativeInteger"/>
+    </xsd:complexType>
+    <xsd:complexType name="QueueService">
+        <xsd:sequence>
+            <xsd:element name="CallServiceTime" type="Statistics" minOccurs="0"/>
+            <xsd:element name="CallWaitTime" type="Statistics" minOccurs="0"/>
+            <xsd:element name="CallsWaiting" type="Statistics" minOccurs="0"/>
+            <xsd:element name="OnlineAgents" type="Statistics" minOccurs="0"/>
+            <xsd:element name="UnsuccessfulService" type="CountedItem" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+        <xsd:attribute name="CallAttempts" type="xsd:nonNegativeInteger"/>
+        <xsd:attribute name="Name" type="xsd:string" use="required"/>
+    </xsd:complexType>
+    <xsd:complexType name="ApplicationService">
+        <xsd:sequence>
+            <xsd:element name="ServiceTime" type="Statistics"/>
+            <xsd:element name="InService" type="Statistics" minOccurs="0"/>
+        </xsd:sequence>
+        <xsd:attribute name="Name" type="xsd:string"/>
+    </xsd:complexType>
+    <xsd:complexType name="TrunkUsage">
+        <xsd:sequence>
+            <xsd:element name="Calls" type="Statistics" minOccurs="1" maxOccurs="1"/>
+            <xsd:element name="Trunk" type="Trunk" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+        <xsd:attribute name="Name" type="xsd:string"/>
+        <xsd:attribute name="DialPattern" type="xsd:string"/>
+        <xsd:attribute name="Attempt" type="xsd:nonNegativeInteger"/>
+    </xsd:complexType>
+    <xsd:complexType name="Trunk">
+        <xsd:sequence>
+        </xsd:sequence>
+        <xsd:attribute name="Target" type="xsd:string"/>
+        <xsd:attribute name="StartTime" type="xsd:dateTime"/>
+        <xsd:attribute name="Duration" type="xsd:float"/>
+    </xsd:complexType>
+    <xsd:complexType name="TrunkService">
+        <xsd:sequence>
+            <xsd:element name="TrunkCalls" type="Statistics" minOccurs="0" maxOccurs="1"/>
+            <xsd:element name="TrunkUsage" type="TrunkUsage" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+        <xsd:attribute name="Attempt" type="xsd:nonNegativeInteger"/>
+    </xsd:complexType>
+
+    <xsd:complexType name="Reports">
+        <xsd:sequence>
+            <xsd:element ref="Category" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="Polls">
+        <xsd:sequence>
+            <xsd:element ref="Poll" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:element name="Poll">
+        <xsd:complexType>
+            <xsd:attribute name="CallerId" type="xsd:string" use="required"/>
+            <xsd:attribute name="Poll" type="xsd:string" use="required"/>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="Category">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="Category" minOccurs="0" maxOccurs="unbounded"/>
+            </xsd:sequence>
+            <xsd:attribute name="Name" type="xsd:string" use="required"/>
+            <xsd:attribute name="Count" type="xsd:positiveInteger" use="optional"/>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:complexType name="RegistrarService">
+        <xsd:sequence>
+            <xsd:element name="Registrations" type="Statistics" minOccurs="0" maxOccurs="1"/>
+            <xsd:element name="Registration" type="Registration" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="Registration">
+        <xsd:sequence>
+        </xsd:sequence>
+        <xsd:attribute name="Contact" type="xsd:string"/>
+        <xsd:attribute name="BeginDate" type="xsd:dateTime"/>
+        <xsd:attribute name="EndDate" type="xsd:dateTime"/>
+        <xsd:attribute name="Expiry" type="xsd:long"/>
+        <xsd:attribute name="EndNote" type="xsd:string"/>
+        <xsd:attribute name="Protocol" type="xsd:string"/>
+        <xsd:attribute name="CtxId" type="xsd:string"/>
+    </xsd:complexType>
+</xsd:schema>

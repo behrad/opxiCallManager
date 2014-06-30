@@ -1,0 +1,144 @@
+<!-- Standard Action Servlet Mapping -->
+<!--
+<servlet-mapping>
+    <servlet-name>webAppController</servlet-name>
+    <url-pattern>*.do</url-pattern>
+</servlet-mapping>
+-->
+
+<servlet-mapping>
+    <servlet-name>ALServlet</servlet-name>
+    <url-pattern>/log</url-pattern>
+</servlet-mapping>
+
+        <!--<servlet-mapping>
+        <servlet-name>AxisServlet</servlet-name>
+        <url-pattern>/servlet/AxisServlet</url-pattern>
+        </servlet-mapping>
+
+        <servlet-mapping>
+        <servlet-name>AxisServlet</servlet-name>
+        <url-pattern>/services/*</url-pattern>
+        </servlet-mapping>
+
+        <servlet-mapping>
+        <servlet-name>SOAPMonitorService</servlet-name>
+        <url-pattern>/SOAPMonitor</url-pattern>
+        </servlet-mapping>-->
+
+<servlet-mapping>
+<servlet-name>WaitingRoomReport</servlet-name>
+<url-pattern>/waitingRoomReport</url-pattern>
+</servlet-mapping>
+
+<servlet-mapping>
+<servlet-name>greetingVXML</servlet-name>
+<url-pattern>/vxml/greeting</url-pattern>
+</servlet-mapping>
+
+<servlet-mapping>
+<servlet-name>waitingVXML</servlet-name>
+<url-pattern>/vxml/waitingRoom</url-pattern>
+</servlet-mapping>
+
+<servlet-mapping>
+<servlet-name>webTransfer</servlet-name>
+<url-pattern>/callTransfer</url-pattern>
+</servlet-mapping>
+
+        <!--<servlet-mapping>-->
+        <!--<servlet-name>opxiCallManager</servlet-name>-->
+        <!--<url-pattern>/opxiCallManager</url-pattern>-->
+        <!--</servlet-mapping>-->
+        <!--<servlet-mapping>-->
+        <!--<servlet-name>greetingFront</servlet-name>-->
+        <!--<url-pattern>/greetingFront</url-pattern>-->
+        <!--</servlet-mapping>-->
+        <!--<servlet-mapping>-->
+        <!--<servlet-name>postGreetingFront</servlet-name>-->
+        <!--<url-pattern>/postGreetingFront</url-pattern>-->
+        <!--</servlet-mapping>-->
+        <!--<servlet-mapping>-->
+        <!--<servlet-name>mediaFront</servlet-name>-->
+        <!--<url-pattern>/mediaFront</url-pattern>-->
+        <!--</servlet-mapping>-->
+        <!--<servlet-mapping>-->
+        <!--<servlet-name>outCallFront</servlet-name>-->
+        <!--<url-pattern>/outCallFront</url-pattern>-->
+        <!--</servlet-mapping>-->
+        <!--<servlet-mapping>-->
+        <!--<servlet-name>inCallFront</servlet-name>-->
+        <!--<url-pattern>/inCallFront</url-pattern>-->
+        <!--</servlet-mapping>-->
+        <!--<servlet-mapping>-->
+        <!--<servlet-name>greetingServlet</servlet-name>-->
+        <!--<url-pattern>/greetingServlet</url-pattern>-->
+        <!--</servlet-mapping>-->
+        <!--<servlet-mapping>-->
+        <!--<servlet-name>postGreetingServlet</servlet-name>-->
+        <!--<url-pattern>/postGreetingServlet</url-pattern>-->
+        <!--</servlet-mapping>-->
+        <!--<servlet-mapping>-->
+        <!--<servlet-name>queued</servlet-name>-->
+        <!--<url-pattern>/queued</url-pattern>-->
+        <!--</servlet-mapping>-->
+        <!--<servlet-mapping>-->
+        <!--<servlet-name>mediaServlet</servlet-name>-->
+        <!--<url-pattern>/mediaServlet</url-pattern>-->
+        <!--</servlet-mapping>-->
+        <!--<servlet-mapping>-->
+        <!--<servlet-name>queue</servlet-name>-->
+        <!--<url-pattern>/queue</url-pattern>-->
+        <!--</servlet-mapping>-->
+        <!--<servlet-mapping>-->
+        <!--<servlet-name>SystemPresence</servlet-name>-->
+        <!--<url-pattern>/SystemPresence</url-pattern>-->
+        <!--</servlet-mapping>-->
+        <!--<servlet-mapping>-->
+        <!--<servlet-name>presence</servlet-name>-->
+        <!--<url-pattern>/presence</url-pattern>-->
+        <!--</servlet-mapping>-->
+        <!--<servlet-mapping>-->
+        <!--<servlet-name>proxy</servlet-name>-->
+        <!--<url-pattern>/proxy</url-pattern>-->
+        <!--</servlet-mapping>-->
+        <!--<servlet-mapping>-->
+        <!--<servlet-name>ConfigRobot</servlet-name>-->
+        <!--<url-pattern>/ConfigRobot</url-pattern>-->
+        <!--</servlet-mapping>-->
+        <!--<servlet-mapping>-->
+        <!--<servlet-name>IMServlet</servlet-name>-->
+        <!--<url-pattern>/IMServlet</url-pattern>-->
+        <!--</servlet-mapping>-->
+        <!--<servlet-mapping>-->
+        <!--<servlet-name>registrar</servlet-name>-->
+        <!--<url-pattern>/registrar</url-pattern>-->
+        <!--</servlet-mapping>-->
+        <!--<servlet-mapping>-->
+        <!--<servlet-name>testServlet</servlet-name>-->
+        <!--<url-pattern>/testServlet</url-pattern>-->
+        <!--</servlet-mapping>-->
+<servlet-mapping>
+<servlet-name>A2CBridge</servlet-name>
+<url-pattern>/A2CBridge</url-pattern>
+</servlet-mapping>
+
+<servlet-mapping>
+<servlet-name>webIMServlet</servlet-name>
+<url-pattern>/webIMServlet</url-pattern>
+</servlet-mapping>
+
+
+<servlet-mapping>
+<servlet-name>agentReportServlet</servlet-name>
+<url-pattern>/agentReport</url-pattern>
+</servlet-mapping>
+
+<servlet-mapping>
+<servlet-name>AgentPollingServlet</servlet-name>
+<url-pattern>/agentPolling</url-pattern>
+</servlet-mapping>
+        <!--<servlet-mapping>-->
+        <!--<servlet-name>B2BVoiceAppServlet</servlet-name>-->
+        <!--<url-pattern>/B2BVoiceAppServlet</url-pattern>-->
+        <!--</servlet-mapping>-->

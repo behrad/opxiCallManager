@@ -1,0 +1,78 @@
+package com.basamad.opxicm.logging;
+
+import java.util.logging.Logger;
+
+import java.io.Serializable;
+
+
+public abstract class AsyncLogManager {
+	
+	private LogEvent logEvent;
+
+	protected abstract void handleLogEvent() throws OpxiLogException;
+
+    protected abstract void handleRefreshEvent() throws OpxiLogException;
+
+    public abstract LogValueObject getLogValueObject( Class logValueObjectClass, Serializable id ) throws OpxiLogException;
+	
+	public void log( LogEvent logEvent ) {
+		setLogEvent( logEvent );
+		new LogThread( Thread.currentThread().getName() + "-Log", this ).start();
+	}
+
+    public void refresh( LogEvent logEvent ) {
+		setLogEvent( logEvent );
+		new RefreshThread( Thread.currentThread().getName() + "-Refresh", this ).start();
+	}
+
+    protected LogEvent getLogEvent() {
+		return logEvent;
+	}
+
+	private void setLogEvent(LogEvent logEvent) {
+		this.logEvent = logEvent;
+	}
+	
+}
+
+class LogThread extends Thread {
+	
+	private static final Logger logger = Logger.getLogger( LogThread.class );
+	
+	private AsyncLogManager logManager;
+	
+	public LogThread( String name,  AsyncLogManager logManager ) {
+		super( name );
+		this.logManager = logManager;
+    }
+
+	public void run() {
+		try {
+            logger.finer( "running..." );
+            logManager.handleLogEvent();
+		} catch( OpxiLogException e ) {
+			logger.error( e );
+		}
+	}
+}
+
+class RefreshThread extends Thread {
+
+    private static final Logger logger = Logger.getLogger( LogThread.class );
+
+    private AsyncLogManager logManager;
+
+    public RefreshThread( String name, AsyncLogManager logManager ) {
+        super( name );
+        this.logManager = logManager;
+    }
+
+    public void run() {
+        try {
+            logger.finer( "running..." );
+            logManager.handleRefreshEvent();
+        } catch( OpxiLogException e ) {
+            logger.error( e );
+        }
+    }
+}

@@ -1,0 +1,405 @@
+package com.basamadco.opxi.callmanager.pool;
+
+import EDU.oswego.cs.dl.util.concurrent.ConcurrentHashMap;
+import com.basamadco.opxi.callmanager.OpxiException;
+import com.basamadco.opxi.callmanager.call.ApplicationIntegrationException;
+import com.basamadco.opxi.callmanager.call.CallService;
+import com.basamadco.opxi.callmanager.call.CallServiceException;
+import com.basamadco.opxi.callmanager.call.ProxyTarget;
+import com.basamadco.opxi.callmanager.entity.Registration;
+import com.basamadco.opxi.callmanager.entity.profile.OpxiCMEntityProfile;
+import com.basamadco.opxi.callmanager.entity.profile.SkillScore;
+import com.basamadco.opxi.callmanager.logging.ActivityLogNotExistsException;
+import com.basamadco.opxi.callmanager.profile.ProfileException;
+import com.basamadco.opxi.callmanager.sip.util.SipUtil;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Observable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+/**
+ * Represents an agent in OPXi Call Manager for handling calls.
+ * Agents are also callable entities which adds direct agent
+ * calling mechanism. This service is currently implemented via
+ * proxy.
+ * For all UserAgents which are system listAgents, one and only one
+ * Agent object will be loaded into system memory.
+ * Agent object are accessible through AgentPools to system components
+ *
+ * @author Jrad
+ * @see com.basamadco.opxi.callmanager.pool.AgentPool
+ * @since 1.2
+ */
+public class Agent extends ProxyTarget {
+
+    private final static Logger logger = Logger.getLogger( Agent.class.getName() );
+
+    private String AOR;
+
+    private Registration registration;
+
+    private Integer maxOpenCalls;
+
+    private boolean trunkDefaultAccess;
+
+    protected String greetingMsgURI;
+
+    private List poolMemberships;
+
+    private volatile int openCalls;
+
+    private volatile long lastCallClosed = System.currentTimeMillis();
+
+    private volatile boolean active = false;
+
+    private Map skillProfile = new ConcurrentHashMap();
+
+    private String activityLogId;
+
+
+    public Agent() {
+//        super( name );
+    }
+
+    /**
+     * The time agent has been idle (i.e. handling no calls)
+     *
+     * @return The duration this Agent has not handled any calls
+     */
+    public long idleTime() {
+        return lastCallClosed != 0 ? ( System.currentTimeMillis() - lastCallClosed ) : 0;
+    }
+
+    private void decOpenCalls() {
+        synchronized (this) {
+            if (openCalls > 0) {
+                logger.finer( "dec OpenCalls[" + AOR + "]: " + openCalls() + " -> " + ( openCalls - 1 ) );
+                openCalls--;
+                if (openCalls == 0) { // was agent's last call in hand, IDLE time starts
+                    lastCallClosed = System.currentTimeMillis();
+                    checkApplyProfileUpdate();
+                }
+//                return true;
+            } else {
+                throw new IllegalStateException( "OpenCalls '" + AOR + "' is already 0!" );
+            }
+        }
+    }
+
+    private boolean incOpenCalls() {
+        if (active) {
+            synchronized (this) {
+                if (!hasMaximumCallsReached()) {
+                    logger.finer( "inc OpenCalls[" + AOR + "]: " + openCalls() + " -> " + ( openCalls + 1 ) );
+                    openCalls++;
+                    lastCallClosed = 0;
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns how many open/concurrent calls this Agent has in handle
+     *
+     * @return
+     */
+    public int openCalls() {
+        synchronized (this) {
+            return openCalls;
+        }
+    }
+
+    /*public void assign( CallService call ) throws CallServiceException {
+        throw new IllegalStateException( "Not implemented yet..." );
+    }*/
+
+    /**
+     * Assigns the call to this Agent and marks that as his open calls.
+     * Also logs this to the Agent's Activity Log
+     *
+     * @param call The CallService object to handle
+     * @throws AgentNotIdleException if this Agent has no free slots to accept the call
+     */
+    public void assignCall( CallService call ) throws AgentNotIdleException {
+        logger.finer( "Assign " + call + " to " + this );
+        if (isActive() && incOpenCalls()) {
+            notifyHunt();
+            try {
+                getServiceFactory().getLogService().getAgentActivityLogger( getActivityLogId() ).incAssignedCalls();
+            } catch ( OpxiException e ) {
+                logger.log( Level.SEVERE, e.getMessage(), e );
+            }
+            try {
+                doesApplicationInvolve( call );
+            } catch ( ApplicationIntegrationException e ) {
+                logger.log( Level.SEVERE, e.getMessage(), e );
+            }
+        } else {
+            throw new AgentNotIdleException( getAOR() );
+        }
+    }
+
+    /**
+     * Releases the call from this Agent and removes that from his open calls
+     *
+     * @param call The CallService object to remove from this Agent's in handle calls
+     */
+    public void releaseCall( com.basamadco.opxi.callmanager.call.CallService call ) {
+        logger.finer( "Release " + call + " from " + this );
+        decOpenCalls();
+        try {
+            getServiceFactory().getLogService().getAgentActivityLogger( getActivityLogId() )
+                    .addIncomingCallTime( call.duration() );
+        } catch ( ActivityLogNotExistsException e ) {
+            logger.log( Level.SEVERE, e.getMessage(), e );
+        }
+    }
+
+    /**
+     * If this Agent is ready to accept incomming calls
+     *
+     * @return True if Agent's status is "open" otherwise false.
+     */
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive( boolean active ) {
+        this.active = active;
+    }
+
+    private boolean hasMaximumCallsReached() {
+        if (getMaxOpenCalls() == null) {
+            return false;
+        }
+        return getMaxOpenCalls().intValue() == openCalls;
+    }
+
+    public void setCN( String CN ) {
+        super.setCN( CN );
+        setAOR( SipUtil.toSipURIString( CN ) );
+    }
+
+    public void setAOR( String AOR ) {
+        this.AOR = AOR;
+    }
+
+    public String getAOR() {
+        return AOR;
+    }
+
+    public Integer getMaxOpenCalls() {
+        return maxOpenCalls;
+    }
+
+    public void setMaxOpenCalls( Integer maxOpenCalls ) {
+        this.maxOpenCalls = maxOpenCalls;
+    }
+
+    public void setMaxOpenCalls( String maxConcurrentCalls ) {
+        this.maxOpenCalls = new Integer( maxConcurrentCalls );
+    }
+
+    public String getGreetingMsgURI() {
+        return greetingMsgURI;
+    }
+
+    public void setGreetingMsgURI( String greetingMsgURI ) {
+        this.greetingMsgURI = greetingMsgURI;
+    }
+
+    public boolean hasTrunkDefaultAccess() {
+        return trunkDefaultAccess;
+    }
+
+    public void setTrunkDefaultAccess( boolean trunkDefaultAccess ) {
+        this.trunkDefaultAccess = trunkDefaultAccess;
+    }
+
+    /**
+     * This can be used for observers to observe this Agent's hunt event.
+     *
+     * @return The <i>hunting</i> observable role object
+     */
+    public Observable hunting() {
+        return huntNotifier;
+    }
+
+    public Observable selection() {
+        return selectNotifier;
+    }
+
+    /**
+     * Notifies observers of this Agent for his hunt event
+     */
+    public void notifyHunt() {
+        huntNotifier.notifyHunt( this );
+    }
+
+    public void notifySelection( SelectionEvent event ) {
+        selectNotifier.notifySelection( event );
+    }
+
+    /**
+     * Returns the skill efficiency score for this Agent in skillName membership
+     *
+     * @param skillName The skill name this Agent is a member of
+     * @return membership efficiency of the Agent in skillName
+     */
+    public float skillEfficiency( String skillName ) {
+        Float score = (Float) skillProfile.get( skillName );
+        if (score == null) {
+            return 0.0f;
+        }
+        logger.finest( "Skill score for '" + skillName + "'=" + score );
+        return score.floatValue();
+    }
+
+    /**
+     * Returns all entities this Agent is a member of. These can be
+     * workgroups, skills, ... generally called Pools.
+     *
+     * @return A String list containing pool names (CNs)
+     */
+    public List getPoolMemberships() {
+        return poolMemberships;
+    }
+
+    public void setPoolMemberships( List poolMemberships ) {
+        this.poolMemberships = poolMemberships;
+    }
+
+    /**
+     * Returns this Agent's contact location identified form location service
+     *
+     * @return the contact address in URI
+     */
+    public Registration getRegistration() {
+        return registration;
+    }
+
+    public void setRegistration( Registration registration ) {
+        this.registration = registration;
+    }
+
+    /**
+     * The String value of the URI returned by getContact()
+     *
+     * @return getContact().toString()
+     * @throws OpxiException
+     */
+    public List getTargetURIs() throws OpxiException {
+        if (getRegistration() != null) {
+            return getServiceFactory().getSipService().toURIList( getRegistration().getLocation().getURI() );
+        } else {
+            return super.getTargetURIs();
+        }
+    }
+
+    /**
+     * Call queues are not supported for now. Agents are called throght proxy.
+     *
+     * @return false everytime
+     */
+    public boolean isQueueable() {
+        return false;
+    }
+
+    /**
+     * Returns the Agent Activiry Log id associated to this Agent
+     *
+     * @return
+     */
+    public String getActivityLogId() {
+        return activityLogId;
+    }
+
+    public void setActivityLogId( String activityLogId ) {
+        this.activityLogId = activityLogId;
+    }
+
+    protected void applyProfile( OpxiCMEntityProfile profile ) throws ProfileException {
+//        try {
+//            OpxiCMEntityProfile profile = BaseDAOFactory.getWebdavDAOFactory().getAgentProfileDAO( getName() ).readProfile();
+        setMaxOpenCalls( new Integer( profile.getOpxiCMEntityProfileChoice().getAgentProfile().getMaxOpenCalls() ) );
+        setTrunkDefaultAccess( profile.getOpxiCMEntityProfileChoice().getAgentProfile().getTrunkDefaultAccess() );
+        if (profile.getOpxiCMEntityProfileChoice().getAgentProfile().getGreetingAudioCount() > 0) {
+            setGreetingMsgURI( profile.getOpxiCMEntityProfileChoice().getAgentProfile().getGreetingAudio( 0 ).getSrc() );
+        }
+        SkillScore[] scores = profile.getOpxiCMEntityProfileChoice().getAgentProfile().getSkillScore();
+        for (int i = 0; i < scores.length; i++) {
+            skillProfile.put( scores[i].getSkillName(), new Float( scores[i].getScore() ) );
+        }
+        logger.finest( "Profile for agent '" + getName() + "' successfully applied." );
+        super.applyProfile( profile );
+//        } catch ( DAOFactoryException e ) {
+//            throw new DAOException( e.getMessage() );
+//        }
+    }
+
+
+    protected boolean hasUpdatableState() {
+        return openCalls() == 0;
+    }
+
+    public boolean equals( Object to ) {
+        if (to == null) {
+            return false;
+        }
+        if (this == to) {
+            return true;
+        }
+        if (( to instanceof String )) {
+            return this.getName().equals( to );
+        }
+        Agent agent = (Agent) to;
+        return this.getName().equals( agent.getName() );
+    }
+
+    public int hashCode() {
+        return ( getName() != null ? getName().hashCode() : 0 );
+    }
+
+    public String toString() {
+//        boolean huntable = !hasMaximumCallsReached() && isActive();
+        return "Agent[" + getAOR() +
+                ", maxOpenCalls: " + maxOpenCalls +
+                ", greetingMsgURl: " + greetingMsgURI +
+                ", openCalls: " + openCalls +
+                ", active: " + active +
+                ", contact: " + registration +
+                "]";
+    }
+
+    public void dispose() {
+        skillProfile.clear();
+        poolMemberships.clear();
+    }
+
+    private HuntingNotifier huntNotifier = new HuntingNotifier();
+
+    private class HuntingNotifier extends Observable {
+
+        public void notifyHunt( Agent agent ) {
+            setChanged();
+            notifyObservers( agent );
+        }
+
+    }
+
+    private SelectionNotifier selectNotifier = new SelectionNotifier();
+
+    private class SelectionNotifier extends Observable {
+
+        public void notifySelection( SelectionEvent selection ) {
+            setChanged();
+            notifyObservers( selection );
+        }
+
+    }
+
+}

@@ -1,0 +1,135 @@
+package com.basamadco.opxi.callmanager.logging;
+
+import com.basamadco.opxi.activitylog.schema.OpxiActivityLog;
+import com.basamadco.opxi.callmanager.OpxiException;
+import com.basamadco.opxi.callmanager.entity.dao.BaseDAOFactory;
+import com.basamadco.opxi.callmanager.entity.dao.directory.DirectoryDAOFactory;
+import com.basamadco.opxi.callmanager.entity.dao.directory.ldap.LdapDAOFactory;
+import com.basamadco.opxi.callmanager.sip.util.SipUtil;
+import com.basamadco.opxi.callmanager.util.PropertyUtil;
+import org.apache.commons.httpclient.HttpURL;
+import org.apache.webdav.lib.Constants;
+import org.apache.webdav.lib.PropertyName;
+import org.apache.webdav.lib.WebdavResource;
+import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.ValidationException;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.text.SimpleDateFormat;
+import java.util.Hashtable;
+import java.util.logging.Logger;
+
+
+/**
+ * @author Jrad
+ *         Date: Jul 9, 2006
+ *         Time: 10:24:13 AM
+ *
+ * @deprecated
+ */
+public class WebDavReportAction implements ForceAction {
+
+    private static final Logger logger = Logger.getLogger( WebDavReportAction.class.getName() );
+
+    private static final String REPORT_URL = PropertyUtil.getProperty( "opxi.logReport.exchange.dir" );
+
+    private static final String EXCHANGE = PropertyUtil.getProperty( "opxi.callmanager.exchange.url.prefix" );
+
+    private static final String EXCHANGE_DOMAIN = PropertyUtil.getProperty( "opxi.logReport.exchange.domain" );
+
+    private static final String FROMNAME = PropertyUtil.getProperty( "opxi.logReport.exchange.fromName" );
+
+    private static final String SUBJECT = PropertyUtil.getProperty( "opxi.logReport.exchange.subject" );
+
+    private static final String IMPORTANCE = PropertyUtil.getProperty( "opxi.logReport.exchange.importance" );
+
+    private static final String HTTP = "http://";
+
+    private static final char PATH_SEPERATOR = '/';
+
+    private static final char DOMAIN_SEPERATOR = '\\';
+
+    private static final String AGENT = "@agentName@";
+
+    private static final StringBuffer AGENT_DIR = new StringBuffer();
+
+    private static final SimpleDateFormat formatter = new SimpleDateFormat( "yyyy.MM.dd-hh.mm" );
+
+    static {
+        AGENT_DIR.append( PATH_SEPERATOR ).append( EXCHANGE ).append( PATH_SEPERATOR ).append( AGENT )
+                .append( PATH_SEPERATOR ).append( REPORT_URL );
+    }
+
+
+    public void doForceAction( OpxiActivityLog logVO ) throws ForceActionException {
+        WebdavResource resource = null;
+        File tempFile = null;
+        try {
+//            logger.finer( "Agent: " + logVO.getAgentActivity().getAgent() );
+            String agentName = SipUtil.getName( logVO.getAgentActivity().getAgent() );
+//            logger.finer( "Agent name: " + agentName );
+            String logVOId = logVO.getId();
+            DirectoryDAOFactory adao = (DirectoryDAOFactory) BaseDAOFactory.getDAOFactory( BaseDAOFactory.DIRECTORY );
+            String agentManager = adao.getAgentDAO().getManagerNameFor( agentName );
+//            logger.finer( "Agent Manager Name: " + agentManager );
+            String passwd = adao.getAgentDAO().getUserPassword( agentManager );
+//            logger.finer( "Agent Manager Password: " + agentManager );
+            String agentReportDir = AGENT_DIR.toString().replaceAll( AGENT, agentManager );
+            HttpURL url = new HttpURL( HTTP + LdapDAOFactory.LDAP_HOST + agentReportDir );
+//            logger.finer( "Agent Manager DAV url: " + url.getURI() );
+            url.setUserinfo( EXCHANGE_DOMAIN + DOMAIN_SEPERATOR + agentManager, passwd );
+            resource = new WebdavResource( url, WebdavResource.DEFAULT, 0 );
+            if( resource.getStatusCode() == 200 ) {
+                resource.lockMethod();
+                tempFile = File.createTempFile( agentName, logVOId );
+                OutputStreamWriter memoryWriter = new OutputStreamWriter( new FileOutputStream( tempFile ) );
+                logVO.marshal( memoryWriter );
+                memoryWriter.flush();
+                memoryWriter.close();
+                String fileName = logVOId + ".xml";
+                String resourcePah = agentReportDir + PATH_SEPERATOR + fileName;
+                boolean succeeded = resource.putMethod( resourcePah, tempFile );
+                if( !succeeded ) {
+                    throw new ReportActionException( "Unable to execute putMethod." );
+                }
+
+                Hashtable props = new Hashtable();
+                props.put( new PropertyName( Constants.DAV, "contentclass" ), "urn:content-classes:reportmessage" );
+                props.put( new PropertyName( "urn:schemas:httpmail:", "subject" ), SUBJECT );
+                props.put( new PropertyName( "urn:schemas:httpmail:", "fromname" ), FROMNAME );
+                props.put( new PropertyName( "urn:schemas:httpmail:", "importance" ), IMPORTANCE );
+
+                succeeded = resource.proppatchMethod( resourcePah, props, true );
+                if( !succeeded ) {
+                    throw new ReportActionException( "Unable to execute proppatchMethod." );
+                }
+            } else {
+                logger.severe( "Error connecting to WebDAV resource: " + resource.getStatusCode() );
+                throw new ReportActionException( resource.getStatusMessage() );
+            }
+        } catch( MarshalException e ) {
+            throw new ReportActionException( e.getMessage() );
+        } catch( ValidationException e ) {
+            throw new ReportActionException( e.getMessage() );
+        } catch( OpxiException e ) {
+            throw new ReportActionException( e.getMessage() );
+        } catch( IOException e ) {
+            throw new ReportActionException( e.getMessage() );
+        } finally {
+            if( tempFile != null ) {
+                tempFile.delete();
+            }
+            try {
+                if( resource != null ) {
+                    resource.unlockMethod();
+                }
+            } catch ( IOException e ) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+}

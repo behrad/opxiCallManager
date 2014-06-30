@@ -1,0 +1,64 @@
+package com.basamad.opxicm.entity;
+
+import com.basamad.opxicm.qms.HuntingPolicy;
+import com.basamad.opxicm.qms.NoSuchPolicyException;
+
+import java.io.Serializable;
+
+/**
+ * HuntingProfile is an OpxiCallManager entity thought no CUD operations are supported, they are only readable.
+ * HuntingProfile name is used as the key to inject a HuntingPolicy subclassed instance into a QueueTarget.
+ *
+ * @author Jrad
+ *         Date: Feb 5, 2006
+ *         Time: 12:06:05 PM
+ * @ hibernate.class
+ */
+public class HuntingProfile implements Serializable {
+
+    private Long id;
+
+    private String name;
+
+    private HuntingPolicy policy;
+
+    public HuntingProfile() {
+    }
+
+    public HuntingProfile( String name ) throws NoSuchPolicyException {
+        setName( name );
+    }
+
+    /**
+     * @hibernate.id generator-class="identity"
+     */
+    public Long getId() {
+        return id;
+    }
+
+    public void setId( Long id ) {
+        this.id = id;
+    }
+
+    /**
+     * @hibernate.property
+     */
+    public String getName() {
+        return name;
+    }
+
+    public void setName( String name ) throws NoSuchPolicyException {
+        this.name = name;
+        // Inject the HuntingPolicy instance from profile name
+        setPolicy( HuntingPolicy.getPolicyForName( name ) );
+    }
+
+    public HuntingPolicy getPolicy() {
+        return policy;
+    }
+
+    private void setPolicy( HuntingPolicy policy ) {
+        this.policy = policy;
+    }
+
+}

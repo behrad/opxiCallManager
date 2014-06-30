@@ -1,0 +1,23 @@
+package com.basamad.opxicm.logging;
+
+public class CallManagerEvent {
+	
+	public static final CallManagerEvent NEW_REGISTRATION = new CallManagerEvent( "NEW_REGISTRATION" );
+	
+	public static final CallManagerEvent NEW_AGENT_ACTIVITY_LOG = new CallManagerEvent( "NEW_AGENT_ACTIVITY_LOG" );
+	
+	public static final CallManagerEvent PRESENCE = new CallManagerEvent( "PRESENCE" );
+
+    public static final CallManagerEvent CDR = new CallManagerEvent( "Call-Detail-Record" );
+
+    private String eventName;
+	
+	private CallManagerEvent( String eventName ) {
+		this.eventName = eventName;
+	}			
+
+	public String getEventName() {
+		return eventName;
+	}
+
+}

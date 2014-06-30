@@ -1,0 +1,4 @@
+
+<action path="/home"
+        type="org.apache.struts.actions.ForwardAction"
+        parameter="pages.home"/>

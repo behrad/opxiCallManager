@@ -1,0 +1,38 @@
+Builder4J  1.0
+==============
+
+This is a java development tool based on Apache Ant 1.6 which is currently supporting some cool features I've faced through my dev-life ! I'm really looking forward to hear tips from you. ;)
+
+Installiation:
+--------------
+There's no easier way than expanding the "builder4j.zip" archive to any directory you feel easy browsing.
+
+Usage:
+------
+Run build.bat (with no option) to see the usage help message.You should define your project home directory with command line options to build.bat.
+
+Directory Structure:
+--------------------
+Builder4J assumes that you have such a directory structure under your project home directory ( e.g. P_H_D ):
+
+ P_H_D ---
+          + src ---
+	  |    	   |
+	  |    	   |---your java sources & packages
+	  |        |
+	  |        |
+	  |        + resources ---
+	  |		 	  |
+	  |			  |---extra files which will be included in your packaged jar file
+	  |
+	  |
+	  + lib ---
+	  |	   |
+	  |	   |---your project jar libraries.
+
+
+Contact Info:
+-------------
+You can e-mail me at "behrad@dev.java.net" OR YIM me at "cups_of_java" 
+
+--Jrad  8/15/2005

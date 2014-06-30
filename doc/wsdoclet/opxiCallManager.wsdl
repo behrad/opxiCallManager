@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<definitions 
+    targetNamespace="http://opxi.basamadco.com/callmanager/services" 
+    xmlns:tns="http://opxi.basamadco.com/callmanager/services" 
+    xmlns="http://schemas.xmlsoap.org/wsdl/" 
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+
+  <message name="HelloWebService_hello">
+    <part name="name" type="xsd:string"/>
+  </message>
+  <message name="HelloWebService_helloResponse">
+    <part name="result" type="xsd:string"/>
+  </message>
+
+  <message name="AdminService_createAgentProfile">
+    <part name="dn" type="xsd:string"/>
+  </message>
+  <message name="AdminService_createAgentProfileResponse">
+  </message>
+
+  <message name="AdminService_updateAgentProfile">
+    <part name="xmlProfile" type="xsd:string"/>
+    <part name="greetingAudio" type="xsd:base64Binary"/>
+  </message>
+  <message name="AdminService_updateAgentProfileResponse">
+  </message>
+
+  <message name="AdminService_readAgentProfile">
+    <part name="dn" type="xsd:string"/>
+  </message>
+  <message name="AdminService_readAgentProfileResponse">
+    <part name="result" type="xsd:string"/>
+  </message>
+
+  <message name="AdminService_createSkillProfile">
+    <part name="skillDN" type="xsd:string"/>
+  </message>
+  <message name="AdminService_createSkillProfileResponse">
+  </message>
+
+  <message name="AdminService_updatePoolProfile">
+    <part name="xmlPoolProfile" type="xsd:string"/>
+    <part name="waitingFile" type="xsd:base64Binary"/>
+  </message>
+  <message name="AdminService_updatePoolProfileResponse">
+  </message>
+
+  <message name="AdminService_readPoolProfile">
+    <part name="skillOrWorkgroupDN" type="xsd:string"/>
+  </message>
+  <message name="AdminService_readPoolProfileResponse">
+    <part name="result" type="xsd:string"/>
+  </message>
+
+  <message name="AdminService_createWorkgroupProfile">
+    <part name="workgroupDN" type="xsd:string"/>
+  </message>
+  <message name="AdminService_createWorkgroupProfileResponse">
+  </message>
+
+  <message name="AdminService_deleteAgentProfile">
+    <part name="dn" type="xsd:string"/>
+  </message>
+  <message name="AdminService_deleteAgentProfileResponse">
+  </message>
+
+  <message name="AdminService_deletePoolProfile">
+    <part name="dn" type="xsd:string"/>
+  </message>
+  <message name="AdminService_deletePoolProfileResponse">
+  </message>
+
+  <message name="AdminService_getPoolTypeImplementations">
+  </message>
+  <message name="AdminService_getPoolTypeImplementationsResponse">
+    <part name="result" type="xsd:anyType"/>
+  </message>
+
+  <message name="AdminService_test2DArrays">
+  </message>
+  <message name="AdminService_test2DArraysResponse">
+    <part name="result" type="xsd:anyType"/>
+  </message>
+
+  <portType name="HelloWebService">
+
+    <operation name="hello" parameterOrder="name ">
+      <input message="tns:HelloWebService_hello"/>
+      <output message="tns:HelloWebService_helloResponse"/>
+    </operation>
+
+  </portType>
+  <portType name="AdminService">
+
+    <operation name="createAgentProfile" parameterOrder="dn ">
+      <input message="tns:AdminService_createAgentProfile"/>
+      <output message="tns:AdminService_createAgentProfileResponse"/>
+    </operation>
+
+    <operation name="updateAgentProfile" parameterOrder="xmlProfile greetingAudio ">
+      <input message="tns:AdminService_updateAgentProfile"/>
+      <output message="tns:AdminService_updateAgentProfileResponse"/>
+    </operation>
+
+    <operation name="readAgentProfile" parameterOrder="dn ">
+      <input message="tns:AdminService_readAgentProfile"/>
+      <output message="tns:AdminService_readAgentProfileResponse"/>
+    </operation>
+
+    <operation name="createSkillProfile" parameterOrder="skillDN ">
+      <input message="tns:AdminService_createSkillProfile"/>
+      <output message="tns:AdminService_createSkillProfileResponse"/>
+    </operation>
+
+    <operation name="updatePoolProfile" parameterOrder="xmlPoolProfile waitingFile ">
+      <input message="tns:AdminService_updatePoolProfile"/>
+      <output message="tns:AdminService_updatePoolProfileResponse"/>
+    </operation>
+
+    <operation name="readPoolProfile" parameterOrder="skillOrWorkgroupDN ">
+      <input message="tns:AdminService_readPoolProfile"/>
+      <output message="tns:AdminService_readPoolProfileResponse"/>
+    </operation>
+
+    <operation name="createWorkgroupProfile" parameterOrder="workgroupDN ">
+      <input message="tns:AdminService_createWorkgroupProfile"/>
+      <output message="tns:AdminService_createWorkgroupProfileResponse"/>
+    </operation>
+
+    <operation name="deleteAgentProfile" parameterOrder="dn ">
+      <input message="tns:AdminService_deleteAgentProfile"/>
+      <output message="tns:AdminService_deleteAgentProfileResponse"/>
+    </operation>
+
+    <operation name="deletePoolProfile" parameterOrder="dn ">
+      <input message="tns:AdminService_deletePoolProfile"/>
+      <output message="tns:AdminService_deletePoolProfileResponse"/>
+    </operation>
+
+    <operation name="getPoolTypeImplementations" >
+      <input message="tns:AdminService_getPoolTypeImplementations"/>
+      <output message="tns:AdminService_getPoolTypeImplementationsResponse"/>
+    </operation>
+
+    <operation name="test2DArrays" >
+      <input message="tns:AdminService_test2DArrays"/>
+      <output message="tns:AdminService_test2DArraysResponse"/>
+    </operation>
+
+  </portType>
+
+  <binding name="HelloWebServiceBinding" type="tns:HelloWebService">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="rpc"/>
+
+    <operation name="hello">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal" namespace="http://opxi.basamadco.com/callmanager/services"/>
+      </input>
+      <output>
+        <soap:body use="literal" namespace="http://opxi.basamadco.com/callmanager/services"/>
+      </output>
+    </operation>
+
+  </binding>
+  <binding name="AdminServiceBinding" type="tns:AdminService">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="rpc"/>
+
+    <operation name="createAgentProfile">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal" namespace="http://opxi.basamadco.com/callmanager/services"/>
+      </input>
+      <output>
+        <soap:body use="literal" namespace="http://opxi.basamadco.com/callmanager/services"/>
+      </output>
+    </operation>
+
+    <operation name="updateAgentProfile">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal" namespace="http://opxi.basamadco.com/callmanager/services"/>
+      </input>
+      <output>
+        <soap:body use="literal" namespace="http://opxi.basamadco.com/callmanager/services"/>
+      </output>
+    </operation>
+
+    <operation name="readAgentProfile">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal" namespace="http://opxi.basamadco.com/callmanager/services"/>
+      </input>
+      <output>
+        <soap:body use="literal" namespace="http://opxi.basamadco.com/callmanager/services"/>
+      </output>
+    </operation>
+
+    <operation name="createSkillProfile">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal" namespace="http://opxi.basamadco.com/callmanager/services"/>
+      </input>
+      <output>
+        <soap:body use="literal" namespace="http://opxi.basamadco.com/callmanager/services"/>
+      </output>
+    </operation>
+
+    <operation name="updatePoolProfile">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal" namespace="http://opxi.basamadco.com/callmanager/services"/>
+      </input>
+      <output>
+        <soap:body use="literal" namespace="http://opxi.basamadco.com/callmanager/services"/>
+      </output>
+    </operation>
+
+    <operation name="readPoolProfile">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal" namespace="http://opxi.basamadco.com/callmanager/services"/>
+      </input>
+      <output>
+        <soap:body use="literal" namespace="http://opxi.basamadco.com/callmanager/services"/>
+      </output>
+    </operation>
+
+    <operation name="createWorkgroupProfile">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal" namespace="http://opxi.basamadco.com/callmanager/services"/>
+      </input>
+      <output>
+        <soap:body use="literal" namespace="http://opxi.basamadco.com/callmanager/services"/>
+      </output>
+    </operation>
+
+    <operation name="deleteAgentProfile">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal" namespace="http://opxi.basamadco.com/callmanager/services"/>
+      </input>
+      <output>
+        <soap:body use="literal" namespace="http://opxi.basamadco.com/callmanager/services"/>
+      </output>
+    </operation>
+
+    <operation name="deletePoolProfile">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal" namespace="http://opxi.basamadco.com/callmanager/services"/>
+      </input>
+      <output>
+        <soap:body use="literal" namespace="http://opxi.basamadco.com/callmanager/services"/>
+      </output>
+    </operation>
+
+    <operation name="getPoolTypeImplementations">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal" namespace="http://opxi.basamadco.com/callmanager/services"/>
+      </input>
+      <output>
+        <soap:body use="literal" namespace="http://opxi.basamadco.com/callmanager/services"/>
+      </output>
+    </operation>
+
+    <operation name="test2DArrays">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal" namespace="http://opxi.basamadco.com/callmanager/services"/>
+      </input>
+      <output>
+        <soap:body use="literal" namespace="http://opxi.basamadco.com/callmanager/services"/>
+      </output>
+    </operation>
+
+  </binding>
+
+  <service name="HelloWebService">
+    <port name="HelloWebServicePort" binding="tns:HelloWebServiceBinding">
+      <soap:address location="REPLACE_WITH_ACTUAL_URL"/>
+    </port>
+  </service>
+  <service name="AdminService">
+    <port name="AdminServicePort" binding="tns:AdminServiceBinding">
+      <soap:address location="REPLACE_WITH_ACTUAL_URL"/>
+    </port>
+  </service>
+
+</definitions>

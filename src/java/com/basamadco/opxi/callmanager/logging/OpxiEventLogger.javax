@@ -1,0 +1,22 @@
+package com.basamad.opxicm.logging;
+
+public class OpxiEventLogger {
+	
+	private AsyncLogManager logManager;
+	
+	private LogEvent logEvent;
+	
+	public OpxiEventLogger( AsyncLogManager manager, LogEvent logEvent ) {	
+		this.logManager = manager;
+		this.logEvent = logEvent;
+	}
+	
+	public void log() {
+		logManager.log( logEvent );
+	}
+
+	public LogEvent getLogEvent() {
+		return logEvent;
+	}
+	
+}

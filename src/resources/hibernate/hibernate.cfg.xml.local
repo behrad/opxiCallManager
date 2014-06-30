@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration
+        PUBLIC "-//Hibernate/Hibernate Configuration DTD//EN"
+        "http://hibernate.sourceforge.net/hibernate-configuration-2.0.dtd">
+<hibernate-configuration>
+    <session-factory>
+        <!-- Data Source -->
+        <!--<property name="connection.datasource">jdbc/mysql</property>-->
+        <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+        <property name="hibernate.connection.url">
+            jdbc:mysql://192.168.128.65/opxi?autoreconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF8
+        </property>
+        <property name="hibernate.connection.username">root</property>
+        
+
+        <!-- Database Settings -->
+        <property name="dialect">net.sf.hibernate.dialect.MySQLDialect</property>
+	<!--<property name="show_sql">true</property>-->
+        <!-- ConnectionPool settings -->
+        
+
+        <!-- Mapping files -->
+        <mapping resource="com/basamadco/opxi/callmanager/entity/Domain.hbm.xml" />
+        <mapping resource="com/basamadco/opxi/callmanager/entity/UserAgent.hbm.xml" />
+        <mapping resource="com/basamadco/opxi/callmanager/entity/Subscription.hbm.xml" />
+        <mapping resource="com/basamadco/opxi/callmanager/entity/Registration.hbm.xml" />
+
+
+    </session-factory>
+
+</hibernate-configuration>

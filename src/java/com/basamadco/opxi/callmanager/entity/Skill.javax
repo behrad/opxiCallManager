@@ -1,0 +1,15 @@
+package com.basamad.opxicm.entity;
+
+import com.basamad.opxicm.qms.PoolTarget;
+
+/**
+ * @author Jrad
+ *         Date: Jan 30, 2006
+ *         Time: 1:46:19 PM
+ *
+ * @hibernate .joined-subclass
+ * @hibernate .joined-subclass-key column="id"
+ */
+public class Skill extends PoolTarget {
+    
+}

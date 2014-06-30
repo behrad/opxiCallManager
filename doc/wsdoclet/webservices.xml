@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<webservices
+    xmlns="http://java.sun.com/xml/ns/j2ee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/j2ee_web_services_1_1.xsd"
+    version="1.1">
+
+  <webservice-description>
+    
+         
+
+    <webservice-description-name>OpxiCallManagerWebServiceModule</webservice-description-name>
+
+    <wsdl-file>WEB-INF/wsdl/opxiCallManager.wsdl</wsdl-file>
+    <jaxrpc-mapping-file>WEB-INF/jaxrpc-mapping.xml</jaxrpc-mapping-file>
+
+    <port-component>
+
+      
+      
+
+     	<port-component-name>HelloWebService</port-component-name>        
+      <wsdl-port xmlns:pfx="http://opxi.basamadco.com/callmanager/services">pfx:HelloWebServicePort</wsdl-port>
+      <service-endpoint-interface>com.basamadco.opxi.callmanager.services.HelloWebService</service-endpoint-interface>
+      <service-impl-bean>
+        <servlet-link>HelloWebService</servlet-link>
+      </service-impl-bean>
+    </port-component>
+
+    <port-component>
+
+      
+      
+
+     	<port-component-name>AdminService</port-component-name>        
+      <wsdl-port xmlns:pfx="http://opxi.basamadco.com/callmanager/services">pfx:AdminServicePort</wsdl-port>
+      <service-endpoint-interface>com.basamadco.opxi.callmanager.services.AdminService</service-endpoint-interface>
+      <service-impl-bean>
+        <servlet-link>AdminService</servlet-link>
+      </service-impl-bean>
+    </port-component>
+
+  </webservice-description> 
+
+</webservices>

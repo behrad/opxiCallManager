@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+ <!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 1.1//EN"
+       "http://jakarta.apache.org/struts/dtds/tiles-config_1_1.dtd">
+
+<tiles-definitions>
+
+    <definition name="callManager.main" path="/template/main.jsp">
+	</definition>
+	
+    <definition name="pages.error" extends="callManager.main">
+        <put name="title"  	value="Error" />
+        <put name="headerMessage"   value="The following error occured in Opxi call manager" />
+        <put name="body"   	value="/error.jsp" />
+	</definition>
+
+    <definition name="pages.home" extends="callManager.main">
+        <put name="title"  	value="Home" />
+        <put name="headerMessage"   value="Opxi Call Manager - Web Console" />
+        <put name="body"  	value="/home.jsp" />
+	</definition>
+
+    <definition name="pages.useragent.read" extends="callManager.main">
+        <put name="title"  	value="Agent Information" />
+        <put name="headerMessage"   value="Agent Information" />
+        <put name="body"  	value="/useragent.read.jsp" />
+	</definition>
+
+    <definition name="pages.useragent.edit" extends="callManager.main">
+        <put name="title"  	value="Edit Agent" />
+        <put name="headerMessage"   value="Edit Agent" />
+        <put name="body"  	value="/useragent.edit.jsp" />
+	</definition>
+
+    <definition name="pages.useragent.list" extends="callManager.main">
+        <put name="title"  	value="Agent List" />
+        <put name="headerMessage"   value="Agent List" />
+        <put name="body"  	value="/useragent.list.jsp" />
+	</definition>
+
+</tiles-definitions>

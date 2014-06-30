@@ -1,0 +1,114 @@
+package com.basamadco.opxi.callmanager.logging;
+
+import com.basamadco.opxi.activitylog.schema.*;
+import java.util.logging.Logger;
+
+import java.io.Serializable;
+
+/**
+ * @author Jrad
+ *         Date: Aug 13, 2006
+ *         Time: 4:56:32 PM
+ */
+public class QueueActivityLogger extends OpxiActivityLogger {
+
+    private static final Logger logger = Logger.getLogger( QueueActivityLogger.class );
+
+
+    public QueueActivityLogger( LogManager logManager ) {
+        super( logManager, new WebDavReportAction() );
+    }
+
+    protected OpxiActivityLog initLogVO( final Serializable object ) {
+        OpxiActivityLog queueLog = new OpxiActivityLog();
+        QueueActivity qa = new QueueActivity();
+        qa.setName( object.toString() );
+        qa.setCallsHandled( 0 );
+        qa.setCallsInbound( 0 );
+        qa.setCallsAbandoned( 0 );
+        CallWaitingTime CWT = new CallWaitingTime();
+        CWT.setMax( 0 );
+        CWT.setMin( 0 );
+        CWT.setSum( 0 );
+        CWT.setMean( 0 );
+        qa.setCallWaitingTime( CWT );
+        CallAbandonTime CAT = new CallAbandonTime();
+        CAT.setMax( 0 );
+        CAT.setMin( 0 );
+        CAT.setSum( 0 );
+        CAT.setMean( 0 );
+        qa.setCallAbandonTime( CAT );
+        CallInboundTime CIT = new CallInboundTime();
+        CIT.setMax( 0 );
+        CIT.setMin( 0 );
+        CIT.setSum( 0 );
+        CIT.setMean( 0 );
+        qa.setCallInboundTime( CIT );
+        queueLog.setQueueActivity( qa );
+        return queueLog;
+    }
+
+    public void incCallsHandled( String id ) {
+        try {
+            QueueActivity qa = getLogVO( id ).getQueueActivity();
+            qa.setCallsHandled( qa.getCallsHandled() + 1 );
+        } catch( ActivityLogNotExistsException e ) {
+            logger.error( e );
+        }
+    }
+
+    public void incCallsInbound( String id ) {
+        try {
+            QueueActivity qa = getLogVO( id ).getQueueActivity();
+            qa.setCallsInbound( qa.getCallsInbound() + 1 );
+        } catch( ActivityLogNotExistsException e ) {
+            logger.error( e );
+        }
+    }
+
+    public void incCallsAbandoned( String id ) {
+        try {
+            QueueActivity qa = getLogVO( id ).getQueueActivity();
+            qa.setCallsAbandoned( qa.getCallsAbandoned() + 1 );
+        } catch( ActivityLogNotExistsException e ) {
+            logger.error( e );
+        }
+    }
+
+    public void addCallWaitingTime( String id, int waitTime ) {
+        try {
+            if( waitTime != 0 ) {
+                float time = waitTime / 1000f;
+                QueueActivity qa = getLogVO( id ).getQueueActivity();
+                updateStatistics( qa.getCallWaitingTime(), time );
+            }
+        } catch( ActivityLogNotExistsException e ) {
+            logger.error( e );
+        }
+    }
+
+    public void addCallAbandonTime( String id, int waitTime ) {
+        try {
+            if( waitTime != 0 ) {
+                float time = waitTime / 1000f;
+                QueueActivity qa = getLogVO( id ).getQueueActivity();
+                updateStatistics( qa.getCallAbandonTime(), time );
+            }
+        } catch( ActivityLogNotExistsException e ) {
+            logger.error( e );
+        }
+    }
+
+    public void addCallInboundTime( String id, int waitTime ) {
+        try {
+            if( waitTime != 0 ) {
+                float time = waitTime / 1000f;
+                QueueActivity qa = getLogVO( id ).getQueueActivity();
+                updateStatistics( qa.getCallInboundTime(), time );
+            }
+        } catch( ActivityLogNotExistsException e ) {
+            logger.error( e );
+        }
+    }
+
+}

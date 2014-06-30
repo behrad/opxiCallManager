@@ -1,0 +1,505 @@
+<project name="OpxiCallManager" default="build-ear" basedir=".">
+
+    <property file="build.properties"/>
+    <property environment="env"/>
+
+    <path id="classpath">
+        <path location="${build.classes.dir}"/>
+        <fileset dir="${lib.dir}">
+
+            <include name="ant/*.jar"/>
+            <include name="apache/*.jar"/>
+            <include name="axis/*.jar"/>
+            <include name="activemq/*.jar"/>
+            <include name="ext/*.jar"/>
+            <include name="centric/*.jar"/>
+            <include name="hibernate/*.jar"/>
+            <include name="struts/*.jar"/>
+            <include name="j2ee/*.jar"/>
+            <include name="jldap/*.jar"/>
+            <include name="mysql/*.jar"/>
+            <include name="sipservlet/*.jar"/>
+            <include name="wsas/*.jar"/>
+            <include name="xdoclet/*.jar"/>
+            <include name="xml/*.jar"/>
+            <include name="webservices/*.jar"/>
+        </fileset>
+        <fileset dir="${java.home}/../lib" includes="tools.jar"/>
+        <!--<fileset dir="${sipmethod.shared.lib}" includes="*.jar"/>-->
+    </path>
+
+    <target name="echo">
+        <property environment="env"/>
+        <echo>${java.home}</echo>
+    </target>
+
+    <target name="init">
+        <!--splash showduration="3000" /-->
+        <mkdir dir="${src.dir}"/>
+        <mkdir dir="${html.src.dir}"/>
+        <mkdir dir="${lib.dir}"/>
+        <mkdir dir="${api.dir}"/>
+        <mkdir dir="${build.dir}"/>
+        <mkdir dir="${web-inf.dir}"/>
+        <mkdir dir="${web-inf.dir}/lib"/>
+        <mkdir dir="${web-inf.dir}/tld"/>
+        <mkdir dir="${web.gen.dir}"/>
+        <mkdir dir="${web.gen.dir}/wsdl"/>
+        <mkdir dir="${build.classes.dir}"/>
+        <mkdir dir="${web.i18n.dir}"/>
+        <mkdir dir="${lib.dir}"/>
+        <mkdir dir="${hbm.dir}"/>
+        <mkdir dir="${n2a.dir}"/>
+        <!--<mkdir dir="${gen.classes.dir}"/>-->
+
+        <condition property="isNativeFileExist">
+            <and>
+                <available file="${n2a.dir}/*.properties"/>
+            </and>
+        </condition>
+
+    </target>
+
+    <target name="clean">
+        <delete dir="${build.dir}"/>
+    </target>
+
+    <target name="hbm-gen" depends="init">
+        <taskdef name="hibernatedoclet" classpathref="classpath"
+                 classname="xdoclet.modules.hibernate.HibernateDocletTask"/>
+        <hibernatedoclet destdir="${hbm.dir}">
+            <fileset dir="${java.src.dir}">
+                <include name="${hibernate.package}/*.java"/>
+            </fileset>
+            <hibernate version="2.0"/>
+        </hibernatedoclet>
+
+    </target>
+
+    <target name="webdoclet" depends="init">
+        <taskdef name="webdoclet" classpathref="classpath"
+                 classname="xdoclet.modules.web.WebDocletTask"/>
+
+        <webdoclet destdir="${web.gen.dir}"
+                   mergedir="${xdoclet.metadata.dir}">
+            <fileset dir="${java.src.dir}">
+                <include name="**/web/**/*.java"/>
+                <include name="**/entity/*.java"/>
+            </fileset>
+            <service-endpoint/>
+            <deploymentdescriptor servletspec="2.3"
+                                  displayname="Opxi Call Manager SIP Application"
+                                  distributable="false"/>
+            <strutsconfigxml validatexml="true" version="1.1"/>
+            <strutsvalidationxml/>
+        </webdoclet>
+    </target>
+
+    <target name="compile" depends="init">
+        <javac destdir="${build.classes.dir}/"
+               deprecation="${javac.deprecation}"
+               classpathref="classpath"
+               depend="true"
+               debug="true"
+               debuglevel="lines,vars,source">
+            <src path="${java.src.dir}"/>
+            <src path="${web.gen.dir}"/>
+        </javac>
+    </target>
+
+    <target name="compile-schemas" depends="castor-src-gen">
+        <javac srcdir="${gen.dir}/"
+               destdir="${gen.classes.dir}/"
+               deprecation="${javac.deprecation}"
+               classpathref="classpath"
+               depend="true">
+        </javac>
+        <jar jarfile="${lib.dir}/ext/callmanager-xml-entities.jar" basedir="${gen.classes.dir}">
+            <manifest>
+                <attribute name="Build-By" value="${user.name}"/>
+                <attribute name="Implementation-Title" value="${project.name}"/>
+                <attribute name="Implementation-Version" value="${project.version}"/>
+                <attribute name="Implementation-Vendor" value="Ac&amp;c Basamad Co."/>
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="build-jars" depends="compile">
+        <jar jarfile="${lib.dir}/opxiCallManager-couchdb.jar" basedir="${build.classes.dir}"
+             includes="**/doc/**"
+                >
+            <manifest>
+                <attribute name="Build-By" value="${user.name}"/>
+                <attribute name="Implementation-Title" value="${project.name}"/>
+                <attribute name="Implementation-Version" value="${project.version}"/>
+                <attribute name="Implementation-Vendor" value="Ac&amp;c Basamad Co."/>
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="make-sar-sipmethod" depends="compile">
+        <copy todir="${opxi.dir}">
+            <fileset dir="${web.dir}" includes="*"/>
+        </copy>
+        <copy todir="${web-inf.classes.dir}">
+            <fileset dir="${resources.dir}" includes="*.xml"/>
+            <fileset dir="${hbm.dir}"/>
+        </copy>
+        <delete file="${web-inf.classes.dir}/hibernate.cfg.xml"/>
+        <move file="${web-inf.classes.dir}/hibernate.cfg-sipmethod.xml"
+              tofile="${web-inf.classes.dir}/hibernate.cfg.xml"/>
+        <copy file="${src.dir}/server-config.wsdd" todir="${web-inf.dir}"/>
+        <copy file="${src.dir}/sip.xml" todir="${web-inf.dir}"/>
+
+        <!--<copy file="${resources.dir}/matching-rule.xml"
+              todir="${web-inf.classes.dir}/com/basamadco/opxi/callmanager/sip/rules"/>
+        <copy file="${resources.dir}/matching-rule-1.0.dtd"
+              todir="${web-inf.classes.dir}/com/basamadco/opxi/callmanager/sip/rules"/>-->
+
+
+        <copy todir="${web-inf.dir}/lib">
+            <fileset dir="${lib.dir}/hibernate" includes="*.jar"/>
+            <fileset dir="${lib.dir}/struts" includes="*.jar"/>
+            <fileset dir="${lib.dir}/apache" includes="commons-math-1.1.jar"/>
+            <fileset dir="${lib.dir}/axis" includes="*.jar"/>
+            <fileset dir="${lib.dir}/j2ee" includes="*.jar"/>
+            <fileset dir="${lib.dir}/ext" includes="*.jar"/>
+            <fileset dir="${lib.dir}/jldap" includes="*.jar"/>
+            <fileset dir="${lib.dir}/mysql" includes="*.jar"/>
+            <fileset dir="${lib.dir}/xml" includes="*.jar"/>
+        </copy>
+        <copy todir="${web-inf.classes.dir}">
+            <fileset dir="${src.dir}">
+                <include name="*.properties*"/>
+            </fileset>
+        </copy>
+        <jar jarfile="${build.dir}/${app.name}.sar" basedir="${opxi.dir}">
+            <manifest>
+                <attribute name="Build-By" value="${user.name}"/>
+                <attribute name="Implementation-Title" value="${project.name}"/>
+                <attribute name="Implementation-Version" value="${project.version} By ${user.name}"/>
+                <attribute name="Implementation-Vendor" value="Ac&amp;c Basamad Co."/>
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="make-sar" depends="convert2ascii,webdoclet,wseedoclet,compile">
+
+        <copy todir="${opxi.dir}">
+            <fileset dir="${web.dir}" includes="**/**"/>
+        </copy>
+        <copy todir="${web-inf.classes.dir}">
+            <fileset dir="${build.classes.dir}"/>
+            <fileset dir="${resources.dir}" includes="*.xml"/>
+            <fileset dir="${resources.dir}" includes="*.vxml"/>
+        </copy>
+
+        <!--<condition property="deploy.target" value="sipmethod">-->
+        <!--<delete file="${classes.dir}/hibernate.cfg.xml"/>-->
+        <!--<move file="${classes.dir}/hibernate.cfg-sipmethod.xml" tofile="${classes.dir}/hibernate.cfg.xml"/>-->
+        <!--</condition>-->
+
+
+        <!--<copy file="${src.dir}/server-config.wsdd" todir="${web-inf.dir}"/>-->
+        <copy file="${src.dir}/sip.xml" todir="${web-inf.dir}"/>
+        <!--<copy file="${src.dir}/web.xml" todir="${web-inf.dir}"/>-->
+        <copy file="${src.dir}/validator-rules.xml" todir="${web-inf.dir}"/>
+        <copy file="${src.dir}/tiles-defs.xml" todir="${web-inf.dir}"/>
+
+
+        <!--<copy file="${resources.dir}/matching-rule.xml"
+              todir="${web-inf.classes.dir}/com/basamadco/opxi/callmanager/sip/rules"/>
+        <copy file="${resources.dir}/matching-rule-1.0.dtd"
+              todir="${web-inf.classes.dir}/com/basamadco/opxi/callmanager/sip/rules"/>-->
+
+
+        <copy todir="${web-inf.dir}/lib">
+            <fileset dir="${lib.dir}/apache" includes="commons-math-1.1.jar"/>
+            <fileset dir="${lib.dir}/apache" includes="commons-logging-1.0.4.jar"/>
+            <fileset dir="${lib.dir}/hibernate" includes="*.jar"/>
+            <fileset dir="${lib.dir}/centric" includes="*.jar"/>
+            <fileset dir="${lib.dir}/struts" includes="*.jar"/>
+            <fileset dir="${lib.dir}/axis" includes="*.jar"/>
+            <fileset dir="${lib.dir}/j2ee" includes="*.jar"/>
+            <fileset dir="${lib.dir}/ext" includes="*.jar"/>
+            <fileset dir="${lib.dir}/jldap" includes="*.jar"/>
+            <fileset dir="${lib.dir}/mysql" includes="*.jar"/>
+            <fileset dir="${lib.dir}/xml" includes="*.jar"/>
+        </copy>
+
+        <copy todir="${web-inf.dir}/tld">
+            <fileset dir="${lib.dir}/tld"/>
+        </copy>
+
+        <copy todir="${web.i18n.dir}">
+            <fileset dir="${i18n.dir}"/>
+        </copy>
+
+        <!--<replace file="${web.gen.dir}/wsdl/${app.name}.wsdl"-->
+        <!--token="REPLACE_WITH_ACTUAL_URL"-->
+        <!--value="http://opxiMasterServer/opxiCallManager/services/HelloService"/>-->
+
+        <copy todir="${web-inf.dir}">
+            <fileset dir="${web.gen.dir}" includes="wsdl/**"/>
+        </copy>
+
+        <copy todir="${web-inf.dir}">
+            <fileset dir="${web.gen.dir}" includes="*.xml"/>
+        </copy>
+
+        <copy todir="${web-inf.classes.dir}">
+            <fileset dir="${src.dir}">
+                <include name="*.properties*"/>
+            </fileset>
+            <fileset dir="${hbm.dir}"/>
+        </copy>
+
+        <jar jarfile="${build.dir}/${app.name}.sar" basedir="${opxi.dir}">
+            <manifest>
+                <attribute name="Build-By" value="${user.name}"/>
+                <attribute name="Implementation-Title" value="${project.name}"/>
+                <attribute name="Implementation-Version" value="${project.version}"/>
+                <attribute name="Implementation-Vendor" value="AC&amp;C Basamad Co."/>
+            </manifest>
+        </jar>
+
+        <!--<copy file="${src.dir}/application.xml" tofile="${gen.dir}/application.xml"/>
+        <replace file="${gen.dir}/application.xml" token="@appname" value="${app.name}"/>
+
+        <ear destfile="${build.dir}/${app.name}.ear" appxml="${gen.dir}/application.xml">
+            <fileset dir="${build.dir}" includes="*.sar,*.war,*.jar"/>
+            <manifest>
+                <attribute name="Build-By" value="${user.name}"/>
+                <attribute name="Implementation-Title" value="${project.name}"/>
+                <attribute name="Implementation-Version" value="${project.version}"/>
+                <attribute name="Implementation-Vendor" value="AC&amp;C Basamad Co."/>
+            </manifest>
+        </ear>-->
+
+        <!--<delete file="${build.dir}/${app.name}.sar" />-->
+        <!--<delete dir="${opxi.dir}"/>-->
+
+    </target>
+
+    <!--<target name="deploy-sar-sipmethod" depends="make-sar-sipmethod">
+        <delete dir="${sipmethod.deploy.dir}/${app.name}"/>
+        <unjar src="${build.dir}/${app.name}.sar" dest="${sipmethod.deploy.dir}/${app.name}"/>
+        --><!--<exec executable="${sipmethod.home}/bin/startup.bat" spawn="true"/>--><!--
+    </target>-->
+
+    <target name="deploy-sar" depends="make-sar">
+
+        <!--<exec dir="${base.dir}" executable="deploy.bat" failonerror="true"/>-->
+
+        <!--delete dir="${ssari.deploy.dir}/${app.name}"/-->
+        <!--unjar src="${build.dir}/${app.name}.sar" dest="${ssari.deploy.dir}/${app.name}"/-->
+        <!--<delete dir="${sipmethod.deploy.dir}/${app.name}"/>-->
+        <!--<unjar src="${build.dir}/${app.name}.sar" dest="${sipmethod.deploy.dir}/${app.name}"/>-->
+        <!--<exec executable="${sipmethod.home}/bin/startup.bat" spawn="true"/>-->
+    </target>
+
+    <target name="build-ear" depends="make-sar"/>
+
+    <target name="build" depends="build-ear"/>
+
+    <target name="build-all" depends="clean, compile-schemas, build-ear, doc-gen"/>
+
+    <target name="run-tests" depends="compile">
+
+        <copy file="${src.dir}/opxiCallManager.properties" todir="${build.classes.dir}"/>
+
+        <java classname="${run.module}" fork="yes" failonerror="yes">
+            <classpath refid="classpath"/>
+        </java>
+
+    </target>
+
+    <target name="n2a">
+        <native2ascii encoding="${encoding}" src="${input.dir}"
+                      dest="${output.dir}"
+                      includes="**/*.java, **/*.properties, **/*.txt"/>
+    </target>
+
+    <target name="sql-gen">
+        <taskdef name="schemaexport" classpathref="classpath"
+                 classname="net.sf.hibernate.tool.hbm2ddl.SchemaExportTask"/>
+        <schemaexport output="${sql-gen.dir}"
+                      quiet="yes"
+                      delimiter=";"
+                      text="yes">
+            <fileset dir="${web-inf.classes.dir}">
+                <include name="**/entity/*.hbm.xml"/>
+            </fileset>
+        </schemaexport>
+    </target>
+
+    <target name="doc-gen">
+        <taskdef name="java2html" classpathref="classpath" classname="com.java2html.Java2HTMLTask"/>
+        <javadoc destdir="${api.dir}"
+                 sourcepath="${java.src.dir}"
+                 packagenames="${javadoc.include.package}.*"
+                 excludepackagenames="${javadoc.exclude.package}.*"
+                 author="true"
+                 access="${javadoc.access}"
+                 version="true"
+                 overview="overview.html"
+                 windowtitle="${app.name} API Documentation">
+        </javadoc>
+
+        <java2html title="${j2h.pagetitle}"
+                   simple="${j2h.simple}"
+                   tabsize="${j2h.tabsize}"
+                   marginsize="${j2h.marginsize}"
+                   header="true"
+                   footer="false"
+                   destination="${html.src.dir}">
+            <fileset dir="${java.src.dir}">
+                <include name="**/*.java"/>
+            </fileset>
+        </java2html>
+    </target>
+
+    <target name="castor-src-gen" depends="init" description="Generate Java source files from XSD.">
+        <taskdef name="castor-srcgen"
+                 classname="org.exolab.castor.tools.ant.taskdefs.CastorSourceGenTask"
+                 classpathref="classpath"/>
+        <delete dir="${gen.dir}"/>
+        <mkdir dir="${gen.dir}"/>
+        <mkdir dir="${gen.classes.dir}"/>
+        <castor-srcgen file="${resources.dir}/opxiActivityLog.xsd"
+                       todir="${gen.dir}"
+                       package="com.basamadco.opxi.activitylog.schema"
+                       types="j2"
+                       warnings="false"/>
+        <castor-srcgen file="${resources.dir}/opxiCMEntityProfile.xsd"
+                       todir="${gen.dir}"
+                       package="com.basamadco.opxi.callmanager.entity.profile"
+                       types="j2"
+                       warnings="true"/>
+    </target>
+
+    <target name="convert2ascii" depends="init">
+        <native2ascii encoding="Cp1256" src="${n2a.dir}"
+                      dest="${i18n.dir}"
+                      includes="*"
+                />
+    </target>
+
+    <target name="ejbdoclet">
+        <taskdef name="ejbdoclet"
+                 classname="xdoclet.modules.ejb.EjbDocletTask"
+                 classpathref="classpath"/>
+        <ejbdoclet
+                destdir="${gen.dir}"
+                excludedtags="@version, @author"
+                ejbspec="2.0">
+
+            <fileset dir="${java.src.dir}">
+                <include name="**/ejb/*EJB.java"/>
+            </fileset>
+            <service-endpoint/>
+            <localinterface/>
+            <localhomeinterface/>
+            <session/>
+            <utilobject cacheHomes="yes"/>
+            <deploymentdescriptor destdir="${meta-inf.dir}" validatexml="true"/>
+
+        </ejbdoclet>
+    </target>
+
+    <target name="wseedoclet" depends="wscompile">
+        <taskdef name="wseedoclet"
+                 classname="xdoclet.modules.wsee.WseeDocletTask"
+                 classpathref="classpath"/>
+
+        <wseedoclet wsdlFile="wsdl/${app.name}.wsdl"
+                    wseeSpec="1.1"
+                    verbose="true"
+                    destdir="${web.gen.dir}"
+                    jaxrpcMappingFile="jaxrpc-mapping.xml"
+                    force="yes">
+
+            <!-- so this should set the targetNamespace in my .wsdl to http://opxi.basamadco.com -->
+            <packageNamespaceMapping packages="com.basamadco.opxi.callmanager.web.services"
+                                     namespace="http://opxi.basamadco.com/callmanager/services"/>
+
+            <fileset dir="${java.src.dir}">
+                <include name="**/web/services/*.java"/>
+            </fileset>
+
+            <!--<fileset dir="${java.src.dir}">-->
+            <!--<include name="**/ejb/*EJB.java"/>-->
+            <!--</fileset>-->
+
+            <!--<wsdl/>-->
+            <!--<jaxrpc-mapping/>-->
+            <deploymentdescriptor name="OpxiCallManagerWebServiceModule"/>
+        </wseedoclet>
+
+        <!--<replace file="${web.gen.dir}/webservices.xml"
+                 token="&lt;wsdl-port&gt;HelloWebServicePort&lt;/wsdl-port&gt;"
+                 value="&lt;wsdl-port xmlns:pfx=&quot;http://opxi.basamadco.com/callmanager/services&quot;&gt;pfx:HelloWebServicePort&lt;/wsdl-port&gt;"
+                />-->
+
+        <replace file="${web.gen.dir}/webservices.xml"
+                 token="&lt;wsdl-port&gt;AdminServicePort&lt;/wsdl-port&gt;"
+                 value="&lt;wsdl-port xmlns:pfx=&quot;http://opxi.basamadco.com/callmanager/services&quot;&gt;pfx:AdminServicePort&lt;/wsdl-port&gt;"
+                />
+
+        <replace file="${web.gen.dir}/webservices.xml"
+                 token="&lt;icon&gt;"
+                 value=""
+                />
+
+        <replace file="${web.gen.dir}/webservices.xml"
+                 token="&lt;/icon&gt;"
+                 value=""
+                />
+    </target>
+
+    <target name="wscompile" depends="webdoclet, compile">
+        <taskdef name="wscompile" classname="com.sun.xml.rpc.tools.ant.Wscompile">
+            <classpath refid="classpath"/>
+        </taskdef>
+
+        <wscompile base="${gen.dir}"
+                   fork="true"
+                   server="true"
+                   features="rpcliteral"
+                   mapping="${web.gen.dir}/jaxrpc-mapping.xml"
+                   config="${resources.dir}/wscompile-config.xml"
+                   nonClassDir="${web.gen.dir}/wsdl">
+
+            <classpath>
+                <path refid="classpath"/>
+                <pathelement location="${build.classes.dir}"/>
+            </classpath>
+
+        </wscompile>
+        <move file="${web.gen.dir}/wsdl/AdminService.wsdl" tofile="${web.gen.dir}/wsdl/${app.name}.wsdl"/>
+
+    </target>
+
+    <target name="wsdl-gen-axis">
+        <taskdef resource="axis-tasks.properties" classpathref="classpath"/>
+        <axis-java2wsdl classname="com.basamadco.opxi.callmanager.services.AdminService"
+                        output="${web.gen.dir}/wsdl/${app.name}.wsdl"
+                        location="REPLACE_ME"
+                        namespace="http://opxi.basamadco.com/callmanager/services"
+                        style="DOCUMENT">
+
+            <mapping namespace="http://opxi.basamadco.com/callmanager/services"
+                     package="com.basamadco.opxi.callmanager.services"/>
+        </axis-java2wsdl>
+    </target>
+
+    <target name="wsdl2java-axis">
+        <java classname="org.apache.axis.wsdl.WSDL2Java" fork="yes" dir="${web.gen.dir}">
+            <arg value="${soap.service.endpoint}"/>
+            <arg value="-pcom.basamadco.opxi.callmanager.wstest"/>
+            <classpath refid="classpath"/>
+        </java>
+    </target>
+
+
+</project>

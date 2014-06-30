@@ -1,0 +1,131 @@
+<xsd:schema xmlns:xsd='http://www.w3.org/2001/XMLSchema'>
+
+ <xsd:element name='MatchingRule'>
+  <xsd:complexType>
+   <xsd:choice>
+    <xsd:element ref='and'/>
+    <xsd:element ref='or'/>
+    <xsd:element ref='not'/>
+    <xsd:element ref='equal'/>
+    <xsd:element ref='contains'/>
+    <xsd:element ref='exists'/>
+    <xsd:element ref='subdomain-of'/>
+   </xsd:choice>
+   <xsd:attribute name='id' type='xsd:ID' use='optional'/>
+  </xsd:complexType>
+ </xsd:element>
+
+ <xsd:element name='and'>
+  <xsd:complexType>
+   <xsd:choice maxOccurs='unbounded'>
+    <xsd:element ref='and'/>
+    <xsd:element ref='or'/>
+    <xsd:element ref='not'/>
+    <xsd:element ref='equal'/>
+    <xsd:element ref='contains'/>
+    <xsd:element ref='exists'/>
+    <xsd:element ref='subdomain-of'/>
+   </xsd:choice>
+   <xsd:attribute name='id' type='xsd:ID' use='optional'/>
+  </xsd:complexType>
+ </xsd:element>
+
+ <xsd:element name='or'>
+  <xsd:complexType>
+   <xsd:choice maxOccurs='unbounded'>
+    <xsd:element ref='and'/>
+    <xsd:element ref='or'/>
+    <xsd:element ref='not'/>
+    <xsd:element ref='equal'/>
+    <xsd:element ref='contains'/>
+    <xsd:element ref='exists'/>
+    <xsd:element ref='subdomain-of'/>
+   </xsd:choice>
+   <xsd:attribute name='id' type='xsd:ID' use='optional'/>
+  </xsd:complexType>
+ </xsd:element>
+
+ <xsd:element name='not'>
+  <xsd:complexType>
+   <xsd:choice>
+    <xsd:element ref='and'/>
+    <xsd:element ref='or'/>
+    <xsd:element ref='not'/>
+    <xsd:element ref='equal'/>
+    <xsd:element ref='contains'/>
+    <xsd:element ref='exists'/>
+    <xsd:element ref='subdomain-of'/>
+   </xsd:choice>
+   <xsd:attribute name='id' type='xsd:ID' use='optional'/>
+  </xsd:complexType>
+ </xsd:element>
+
+ <xsd:element name='equal'>
+  <xsd:complexType>
+   <xsd:choice maxOccurs='unbounded'>
+    <xsd:element ref='request'/>
+    <xsd:element ref='group'/>
+    <xsd:element ref='literal'/>
+   </xsd:choice>
+   <xsd:attribute name='ignore-case' default='false'>
+    <xsd:simpleType>
+     <xsd:restriction base='xsd:string'>
+      <xsd:enumeration value='true'/>
+      <xsd:enumeration value='false'/>
+     </xsd:restriction>
+    </xsd:simpleType>
+   </xsd:attribute>
+   <xsd:attribute name='id' type='xsd:ID' use='optional'/>
+  </xsd:complexType>
+ </xsd:element>
+
+ <xsd:element name='contains'>
+  <xsd:complexType>
+   <xsd:choice maxOccurs='unbounded'>
+    <xsd:element ref='request'/>
+    <xsd:element ref='group'/>
+    <xsd:element ref='literal'/>
+   </xsd:choice>
+   <xsd:attribute name='ignore-case' default='false'>
+    <xsd:simpleType>
+     <xsd:restriction base='xsd:string'>
+      <xsd:enumeration value='true'/>
+      <xsd:enumeration value='false'/>
+     </xsd:restriction>
+    </xsd:simpleType>
+   </xsd:attribute>
+   <xsd:attribute name='id' type='xsd:ID' use='optional'/>
+  </xsd:complexType>
+ </xsd:element>
+
+ <xsd:element name='subdomain-of'>
+  <xsd:complexType>
+   <xsd:choice maxOccurs='unbounded'>
+    <xsd:element ref='request'/>
+    <xsd:element ref='group'/>
+    <xsd:element ref='literal'/>
+   </xsd:choice>
+   <xsd:attribute name='id' type='xsd:ID' use='optional'/>
+  </xsd:complexType>
+ </xsd:element>
+
+ <xsd:element name='request'>
+  <xsd:complexType>
+   <xsd:attribute name='attribute' type='xsd:string' use='required'/>
+   <xsd:attribute name='id' type='xsd:ID' use='optional'/>
+  </xsd:complexType>
+ </xsd:element>
+
+ <xsd:element name='group'>
+  <xsd:complexType>
+   <xsd:attribute name='attribute' type='xsd:string' use='required'/>
+   <xsd:attribute name='id' type='xsd:ID' use='optional'/>
+  </xsd:complexType>
+ </xsd:element>
+
+ <xsd:element name='literal'>
+  <xsd:complexType>
+   <xsd:attribute name='value' type='xsd:string' use='required'/>
+  </xsd:complexType>
+ </xsd:element>
+</xsd:schema>

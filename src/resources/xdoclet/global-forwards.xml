@@ -1,0 +1,4 @@
+<global-forwards>  
+    <forward name="home" path="pages.home"/>
+    <forward name="error" path="pages.error"/>
+</global-forwards>

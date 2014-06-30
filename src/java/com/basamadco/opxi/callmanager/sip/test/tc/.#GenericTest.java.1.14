@@ -1,0 +1,37 @@
+package com.basamadco.opxi.callmanager.sip.test.tc;
+
+import com.basamadco.opxi.callmanager.sip.test.Test;
+
+import java.io.File;
+
+/**
+ * @author Jrad
+ *         Date: Mar 12, 2006
+ *         Time: 4:39:31 PM
+ */
+public class GenericTest extends Test {
+
+
+    public GenericTest() {
+        setEnabled();
+    }
+
+    public void run() {
+        try {
+            /*String dir = "com/basamadco/opxi/callmanager/pool";
+            System.out.println( this.getClass().getClassLoader().getResource( dir ).getPath() );*/
+//            OpxiToolBox.getClasses( AgentPool.class );
+
+            File f = new File( "C:\\Program%20Files\\IBM\\WebSphere\\AppServer14\\profiles\\AppSrv01\\installedApps\\opxiMasterServerNode01Cell\\opxiCallManager.ear\\opxiCallManager.sar\\WEB-INF\\classes\\com\\basamadco\\opxi\\callmanager\\pool\\rules".replaceAll( "%20", " " ) );
+
+
+            System.out.println( "-----f='" + f.getAbsolutePath() + "'" );
+            System.out.println( f.isDirectory() );
+        } catch ( Exception e ) {
+            System.out.println( "In catch block..." );
+        } finally {
+            System.out.println( "In finally block..." );
+        }
+    }
+
+}

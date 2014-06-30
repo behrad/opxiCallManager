@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<opxiActivityLog id="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://opxi.basamadco.com/opxiActivityLog.xsd" xsi:schemaLocation="http://opxi.basamadco.com/opxiActivityLog.xsd file://c:\java\workspace\opxiCallManager\src\resources\opxiActivityLog.xsd">
+	<AgentActivity CallsAssigned="12" CallsRejected="12" CallsHeld="12" CallsForwarded="12" Cause="ass" Agent="ass" CallsOutbound="12" CallsAnswered="12">
+		<Presence Date="2006-01-01T12:00:00" State="12" Open="true"/>
+		<Service Name="asas" Count="12">
+			<Usage Date="2006-01-01T12:00:00">
+				<RefItem Name="122" Value="122"/>
+			</Usage>
+		</Service>
+		
+		<CallsAnsweringTime Sum="122" Min="122" Variance="122" Max="12" Mean="122"/>
+		<CallsInboundTime Sum="122" Min="122" Variance="122" Max="12" Mean="122"/>
+		<CallsOutboundTime Sum="122" Min="122" Variance="122" Max="12" Mean="122"/>
+	</AgentActivity>
+</opxiActivityLog>

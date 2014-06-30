@@ -1,0 +1,16 @@
+package com.basamadco.opxi.callmanager.logging;
+
+import com.basamadco.opxi.activitylog.schema.OpxiActivityLog;
+
+/**
+ * @author Jrad
+ *         Date: Jul 9, 2006
+ *         Time: 10:20:17 AM
+ *
+ * @deprecated
+ */
+public interface ForceAction {
+
+    public void doForceAction( OpxiActivityLog logVO ) throws ForceActionException;
+
+}

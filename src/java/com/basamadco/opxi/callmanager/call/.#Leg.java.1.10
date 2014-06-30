@@ -1,0 +1,445 @@
+package com.basamadco.opxi.callmanager.call;
+
+import com.basamadco.opxi.callmanager.sip.CallServlet;
+import com.basamadco.opxi.callmanager.sip.SipCallController;
+import com.basamadco.opxi.callmanager.sip.util.ApplicationConstants;
+import com.basamadco.opxi.callmanager.sip.util.SIPConstants;
+import com.basamadco.opxi.callmanager.util.OpxiToolBox;
+import com.basamadco.opxi.callmanager.util.PropertyUtil;
+
+import javax.servlet.ServletException;
+import javax.servlet.sip.*;
+import java.io.IOException;
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+/**
+ * @author Jrad
+ *         Date: Jul 16, 2006
+ *         Time: 3:48:04 PM
+ */
+public class Leg implements SIPConstants {
+
+    private static final Logger logger = Logger.getLogger( Leg.class.getName() );
+
+
+    /*
+     * Some handy String based leg role name constants used in Call Manager B2BUAs
+     */
+    public static final String CALLER = "Caller";
+
+    public static final String VOICE_APP = "Voice Application";
+
+    public static final String AGENT = "Agent";
+
+    public static final String WAITING_MEDIA = "Waiting Media";
+
+    public static final String GREETING_MEDIA = "Greeting Media";
+
+    public static final String IVR_TRANSFER_AGENT = "IVR Transferer to Agent";
+
+    public static final String TRANSFERED_TO_GREETING = "Transferee to Greeting";
+
+    public static final String TRANSFERED_LEG = "Transferee Leg";
+
+    public static final String UNILEG = "Unileg";
+    /*
+     * End of Some handy String based leg role name constants used in Call Manager B2BUAs
+     */
+
+//    public static final String SESSION_LEG_ATTRIBUTE_NAME = "com.basamadco.opxi.callmanager.call.Leg";
+
+    private SipFactory sipFactory;
+
+    private SipSession session;
+
+    private String roleName; // one of the above!
+
+    private SipServletRequest initialRequest;
+
+    private SipServletRequest savedRequest;
+
+    private SipServletResponse successResponse;
+
+    private CallService belongingCall;
+
+    protected LegState state;
+
+    private TimerContext legTimer;
+
+
+    private static final long ALIVE_CALL_LIMIT = Integer.parseInt(
+            PropertyUtil.getProperty( "opxi.callmanager.aliveCallDuration" )
+    ) * 1000;
+
+    private final static String L_LABEL = "State-Change-Lock-";
+
+    private final Object STATE_CHANGE_LOCK = L_LABEL;
+
+    /**
+     * Introduction of such property makes our B2BUA implementations as binary-leg-b2bua.
+     * We're not supporting multi-leg b2bua yet!
+     */
+    private Leg peer;
+
+    public int reInviteCount = 1;
+
+    protected Leg( SipFactory sipFactory, CallService call, SipSession session, String roleName ) {
+        if (roleName == null) {
+            throw new IllegalStateException( "Role name is null for '" + session.getCallId() + "'" );
+        }
+        this.roleName = roleName;
+        this.sipFactory = sipFactory;
+        this.session = session;
+        if (session != null) { // UniLegPlaceHolder passes null parameters!
+            // bind this Leg instance to corresponding sipsession
+            logger.finest( "Creating Leg[" + session.getCallId() + "] for SipSession: " + session );
+            logger.finest( "AppSession: " + session.getApplicationSession() );
+            session.setAttribute( Leg.class.getName(), this );
+        }
+        this.belongingCall = call;
+        this.state = LegState.TRYING;
+    }
+
+    public SipSession getSession() {
+        return session;
+    }
+
+    public void setSession( SipSession session ) {
+        this.session = session;
+    }
+
+    public Leg getPeer() {
+        if (peer == null) {
+            throw new NoPeerLegBoundException( "No peer leg is set for '" + session.getCallId() + "'" );
+        }
+        return peer;
+    }
+
+    protected void setPeer( Leg peer ) {
+        clearPeerLeg();
+        this.peer = peer;
+    }
+
+    public void bind( Leg peer ) {
+        // Set up a bidirectional association between the two legs in one step
+        logger.finer( "Bind pair('" + session.getCallId() + "', '" + peer.session.getCallId() + "')" );
+        this.setPeer( peer );
+        peer.setPeer( this );
+    }
+
+    private void clearPeerLeg() {
+        Leg toClear = peer;
+        if (toClear != null && toClear != UniLegPlaceHolder.INSTANCE) {
+            toClear.peer = UniLegPlaceHolder.INSTANCE;
+            peer = UniLegPlaceHolder.INSTANCE;
+        }
+    }
+
+    public SipServletRequest getInitialRequest() {
+        return initialRequest;
+    }
+
+    public void setInitialRequest( SipServletRequest initialRequest ) {
+        this.initialRequest = initialRequest;
+        setSavedRequest( initialRequest );
+    }
+
+    public CallService getCallService() {
+        return belongingCall;
+    }
+
+    public void setCallService( CallService belongingCall ) {
+        this.belongingCall = belongingCall;
+    }
+
+    public String getRoleName() {
+        return roleName;
+    }
+
+    public void setRoleName( String roleName ) {
+        this.roleName = roleName;
+    }
+
+    public SipServletResponse getSuccessResponse() {
+        return successResponse;
+    }
+
+    public void setSuccessResponse( SipServletResponse successResponse ) {
+        this.successResponse = successResponse;
+    }
+
+
+    public TimerContext getLegTimer() {
+        return legTimer;
+    }
+
+    public void setLegTimer( TimerContext legTimer ) {
+        this.legTimer = legTimer;
+    }
+
+    public boolean hasSetTimer() {
+        return legTimer != null;
+    }
+
+    public LegState getState() {
+        synchronized (STATE_CHANGE_LOCK) {
+            return state;
+        }
+    }
+
+    public void setState( LegState state ) {
+        synchronized (STATE_CHANGE_LOCK) {
+            if (state.equals( getState() )) {
+                logger.warning( "State already is set to '" + state + "'." );
+                return;
+            }
+            logger.finer( "Leg state update '" + this.state + "'-->'" + state + "' for " + session.getCallId() );
+            this.state = state;
+        }
+        // postpone disposing for when associated sipSession is timed-out
+        if (this.state.equals( LegState.IDLE )) {
+            dispose();
+        }
+    }
+
+    public boolean isIdle() {
+        return getState() == LegState.IDLE;
+    }
+
+    public boolean isAlive() {
+        return ( getCallService().getState() == CallService.IN_CALL || getCallService().getState() == CallService.CONNECTED )
+                &&
+                ( (getCallService().getConnectTime() + ALIVE_CALL_LIMIT) > System.currentTimeMillis() );
+    }
+
+    public void handleBye( SipServletRequest bye ) throws IOException {
+        bye.createResponse( SipServletResponse.SC_OK ).send();
+        setState( LegState.IDLE );
+    }
+
+    /**
+     * Establishes a connection between this leg and the specified target URI
+     * <p/>
+     * NOTE: This method should go to UACLeg!
+     *
+     * @param targetURI the callee URI
+     * @throws CallServiceException
+     */
+    public void connectApp( URI targetURI ) throws CallServiceException {
+        try {
+            if (state == LegState.TRYING) {
+                getSession().setHandler( SipCallController.APPLICATION_MACHINE );
+                SipServletRequest peerInvite = createRequest( getInitialRequest(), targetURI );
+                peerInvite.getSession().setHandler( SipCallController.APPLICATION_MACHINE );
+                createPeerLeg( peerInvite, Leg.VOICE_APP );
+                peerInvite.send();
+            } else if (state == LegState.IN_CALL) {
+                logger.warning( "InCall Application Integration not implemented yet..." );
+            } else if (state == LegState.RINGING) {
+                // INVITE application party!
+                // receive ringing!
+                // receive 200
+                // send a 200 (from received 200 SDP) to caller...
+                getSession().setHandler( SipCallController.RINGING_APPLICATION_MACHINE );
+                SipServletRequest peerInvite = createRequest( getInitialRequest(), targetURI );
+                peerInvite.getSession().setHandler( SipCallController.RINGING_APPLICATION_MACHINE );
+                createPeerLeg( peerInvite, Leg.VOICE_APP );
+                peerInvite.send();
+            } else {
+                throw new IllegalStateException( "Couldn't recognize correct action in state '" + state + "'" );
+            }
+        } catch ( Throwable e ) {
+            logger.log( Level.SEVERE, e.getMessage(), e );
+            setState( LegState.IDLE );
+            throw new CallServiceException( e );
+        }
+    }
+
+    public void terminate() throws IOException {
+        if (getState().equals( LegState.ACK_PENDING )) {
+            getSuccessResponse().createAck().send();
+            setState( LegState.IN_CALL );
+            // send corrupt ACK, this forces them to BYE!?
+        } else if (getState().equals( LegState.IN_CALL ) || getState().equals( LegState.FAILURE )) {
+            setState( LegState.END );
+            SipServletRequest bye = session.createRequest( BYE );
+            bye.send();
+        } else if (getState().equals( LegState.END )) {
+            setState( LegState.IDLE );
+        } else {
+            logger.warning( "Couldn't find terminate action in state: " + this );
+//            setState( LegState.IDLE );
+        }
+    }
+
+    public SipServletRequest createRequest( SipServletRequest request ) throws ServletException, IOException {
+        if (!request.isInitial()) {
+            SipServletRequest newReq = session.createRequest( request.getMethod() );
+            copyHeaders( request, newReq );
+            copyContent( request, newReq );
+            return newReq;
+        }
+        throw new IllegalStateException( "Use this method when creating subsequent requests: " + request );
+    }
+
+    public SipServletRequest createRequest( String method ) throws ServletException, IOException {
+        SipServletRequest newReq = session.createRequest( method );
+        return newReq;
+    }
+
+    public SipServletRequest createRefer( SipServletRequest refer ) throws ServletException, IOException {
+        if (!refer.isInitial() && refer.getMethod().equals( REFER )) { // just support indialog REFERs
+            Address referredBy = refer.getAddressHeader( REFERRED_BY );
+            referredBy.setParameter( CallServlet.TRANSFER_CALLID_PARAM, getSession().getCallId() );
+            SipServletRequest newReq = createRefer( refer.getHeader( REFER_TO ), referredBy.toString() );
+            copyContent( refer, newReq );
+            return newReq;
+        }
+        throw new IllegalStateException( "Use this method when creating indialog REFERs: " + refer );
+    }
+
+    public SipServletRequest createRefer( String referTo, String referredBy ) throws ServletException, IOException {
+        SipServletRequest newReq = createRequest( REFER );
+        newReq.setHeader( REFER_TO, referTo );
+        newReq.setHeader( REFERRED_BY, referredBy );
+        ( (SipURI) newReq.getRequestURI() ).setParameter( ApplicationConstants.OUTBOUND_B2BUA_LEG, "true" );
+        return newReq;
+    }
+
+    public SipServletRequest createNotify( SipServletRequest notify ) throws ServletException, IOException {
+        if (!notify.isInitial() && notify.getMethod().equals( NOTIFY )) { // just support indialog REFERs
+            SipServletRequest newReq = session.createRequest( notify.getMethod() );
+            if (notify.getHeader( EVENT ) != null) {
+                newReq.setHeader( EVENT, notify.getHeader( EVENT ) );
+            }
+            if (notify.getHeader( SUBSCRIPTION_STATE ) != null) {
+                newReq.setHeader( SUBSCRIPTION_STATE, notify.getHeader( SUBSCRIPTION_STATE ) );
+            } else {
+                newReq.setHeader( SUBSCRIPTION_STATE, "active;expires=60" );
+            }
+//            if( this instanceof UASLeg ) {
+//                newReq.setRequestURI( getInitialRequest().getAddressHeader( CONTACT ).getURI() );
+//            } else {
+//                newReq.setRequestURI( getInitialRequest().getRequestURI() );
+//            }
+            ( (SipURI) newReq.getRequestURI() ).setParameter( ApplicationConstants.OUTBOUND_B2BUA_LEG, "true" );
+            copyContent( notify, newReq );
+            return newReq;
+        }
+        throw new IllegalStateException( "Use this method when creating indialog NOTIFYs: " + notify );
+    }
+
+    public SipServletRequest createRequest( SipServletRequest request, Address from, Address to ) throws ServletException {
+        SipServletRequest newRequest;
+        newRequest = sipFactory.createRequest( request.getApplicationSession(),
+                request.getMethod(), from, to );
+        newRequest.setHeader( "X-opxi-peer-callId", request.getCallId() );
+        ( (SipURI) newRequest.getRequestURI() ).setParameter( ApplicationConstants.OUTBOUND_B2BUA_LEG, "true" );
+        return newRequest;
+    }
+
+    public SipServletRequest createRequest( SipServletRequest request, URI requestURI ) throws ServletException {
+        SipServletRequest newRequest;
+        newRequest = sipFactory.createRequest( request, false );
+        newRequest.setRequestURI( requestURI );
+        newRequest.setHeader( "X-opxi-peer-callId", request.getCallId() );
+        ( (SipURI) newRequest.getRequestURI() ).setParameter( ApplicationConstants.OUTBOUND_B2BUA_LEG, "true" );
+        return newRequest;
+    }
+
+    public Leg createPeerLeg( SipServletRequest initialReq, String role ) {
+        Leg peerLeg = belongingCall.addUACLeg( initialReq.getSession(), role );
+        peerLeg.setInitialRequest( initialReq );
+//        peerLeg.setState( LegState.TRYING );
+        bind( peerLeg );
+        return peerLeg;
+    }
+
+    public void copyContent( SipServletMessage fromMsg, SipServletMessage toMsg ) throws IOException {
+        if (fromMsg.getContentLength() > 0 && fromMsg.getContentType() != null) {
+            toMsg.setContent( fromMsg.getRawContent(), fromMsg.getContentType() );
+        }
+    }
+
+    public void copyHeaders( SipServletMessage fromMsg, SipServletMessage toMsg ) throws IOException {
+        Iterator<String> headerNames = fromMsg.getHeaderNames();
+        while (headerNames.hasNext()) {
+            String headerName = headerNames.next();
+            //TODO check for case-insensitive header names
+            if (!SYSTEM_HEADERS.contains( headerName )) {
+                ListIterator<String> headers = fromMsg.getHeaders( headerName );
+                while (headers.hasNext()) {
+                    toMsg.addHeader( headerName, headers.next() );
+                }
+            }
+        }
+    }
+
+//    private static final Object PENDING_REQ_LOCK = "Pending-Request-Lock";
+
+    public SipServletRequest getSavedRequest() {
+//        synchronized( PENDING_REQ_LOCK ) {
+//            if( savedRequest == null ) {
+//                throw new IllegalStateException( "No pending request is set in leg: '" + session.getCallId() + "'" );
+//            }
+        SipServletRequest copyRef = savedRequest;
+//            savedRequest = null;
+//            logger.finer( "Clean saved request: " + copyRef );
+        return copyRef;
+//        }
+    }
+
+    public void setSavedRequest( SipServletRequest requestToSave ) {
+//        synchronized( PENDING_REQ_LOCK ) {
+//            if( savedRequest != null ) {
+//                throw new IllegalStateException( "Another request is already pending: " + savedRequest );
+//            }
+        savedRequest = requestToSave;
+//            logger.finer( "Set saved request: " + requestToSave );
+//        }
+    }
+
+    private static final Set<String> SYSTEM_HEADERS;
+
+    static {
+        final Set<String> temp = new HashSet<String>();
+        temp.add( CALL_ID );
+        temp.add( FROM );
+        temp.add( TO );
+        temp.add( CSEQ );
+        temp.add( VIA );
+        temp.add( RECORD_ROUTE );
+        temp.add( ROUTE );
+        temp.add( CONTACT );
+        temp.add( MAX_FORWARDS );
+        SYSTEM_HEADERS = Collections.unmodifiableSet( temp );
+    }
+
+    public String toString() {
+        return OpxiToolBox.unqualifiedClassName( getClass() ) + "[" + session.getCallId()
+                + "] as role '" + roleName + "' in state '" + state + "'";
+    }
+
+    public void dispose() {
+        //TODO should be tested for synchronization! (see setState())
+        // update peer leg
+        setPeer( UniLegPlaceHolder.INSTANCE );
+        
+        // update CallService
+        if (hasSetTimer()) {
+            logger.finest( "Canceling leg timer: " + getLegTimer() );
+            getLegTimer().cancel();
+        }
+        belongingCall.removeLeg( session );
+        
+        // Do not remove the binding with SipSession so late SIP messages can be processed within this leg object 
+//        session.removeAttribute( Leg.class.getName() );
+        
+//        logger.fine( "Invalidating SipSession '" + session.getCallId() + "'" );
+//        session.invalidate();
+        logger.fine( "Leg with callId '" + session.getCallId() + "' is disposed" );
+    }
+
+}

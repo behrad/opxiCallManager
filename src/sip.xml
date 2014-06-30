@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sip-app PUBLIC "-//Java Community Process//DTD SIP Application 1.0//EN"
+        "http://www.jcp.org/dtd/sip-app_1_0.dtd">
+
+<sip-app>
+
+    <display-name>Opxi Call Manager SIP Application</display-name>
+
+    <listener>
+        <listener-class>com.basamadco.opxi.callmanager.sip.listener.ApplicationSessionManager</listener-class>
+    </listener>
+
+    <listener>
+        <listener-class>com.basamadco.opxi.callmanager.sip.listener.AckNotReceived</listener-class>
+    </listener>
+
+    <listener>
+        <listener-class>com.basamadco.opxi.callmanager.sip.listener.CallManagerTimerListener</listener-class>
+    </listener>
+
+    <!--<listener>
+        <listener-class>com.basamadco.opxi.callmanager.sip.listener.SipSessionManager</listener-class>
+    </listener>-->
+
+    <servlet>
+        <servlet-name>greetingFront</servlet-name>
+        <servlet-class>com.basamadco.opxi.callmanager.sip.front.GreetingFront</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>postGreetingFront</servlet-name>
+        <servlet-class>com.basamadco.opxi.callmanager.sip.front.PostGreetingFront</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>mediaFront</servlet-name>
+        <servlet-class>com.basamadco.opxi.callmanager.sip.front.MediaFront</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>inCallFront</servlet-name>
+        <servlet-class>com.basamadco.opxi.callmanager.sip.front.InCallFront</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>greetingServlet</servlet-name>
+        <servlet-class>com.basamadco.opxi.callmanager.sip.b2bua.greeting.GreetingServlet</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>postGreetingServlet</servlet-name>
+        <servlet-class>com.basamadco.opxi.callmanager.sip.b2bua.greeting.PostGreetingServlet</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>queued</servlet-name>
+        <servlet-class>com.basamadco.opxi.callmanager.sip.b2bua.waiting.QueuedServlet</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>mediaServlet</servlet-name>
+        <servlet-class>com.basamadco.opxi.callmanager.sip.b2bua.MediaServlet</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>queue</servlet-name>
+        <servlet-class>com.basamadco.opxi.callmanager.sip.queue.QueueServlet</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>presence</servlet-name>
+        <servlet-class>com.basamadco.opxi.callmanager.sip.presence.PresenceServlet</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>proxy</servlet-name>
+        <servlet-class>com.basamadco.opxi.callmanager.sip.proxy.ProxyServlet</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>ConfigRobot</servlet-name>
+        <servlet-class>com.basamadco.opxi.callmanager.sip.im.ConfigRobot</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>IMServlet</servlet-name>
+        <servlet-class>com.basamadco.opxi.callmanager.sip.im.IMServlet</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>registrar</servlet-name>
+        <servlet-class>com.basamadco.opxi.callmanager.sip.registrar.RegistrarServlet</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>testServlet</servlet-name>
+        <servlet-class>com.basamadco.opxi.callmanager.sip.test.TestServlet</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>B2BVoiceAppServlet</servlet-name>
+        <servlet-class>com.basamadco.opxi.callmanager.sip.b2bua.machines.B2BVoiceAppServlet</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>mediaServerRobot</servlet-name>
+        <servlet-class>com.basamadco.opxi.callmanager.sip.im.MediaServerRobot</servlet-class>
+    </servlet>
+
+
+    <servlet-mapping>
+        <servlet-name>testServlet</servlet-name>
+        <pattern>
+            <and>
+                <equal>
+                    <var>request.method</var>
+                    <value>INVITE</value>
+                </equal>
+                <contains>
+                    <var>request.uri.user</var>
+                    <value>test</value>
+                </contains>
+            </and>
+        </pattern>
+    </servlet-mapping>
+
+
+    <servlet-mapping>
+        <servlet-name>mediaFront</servlet-name>
+        <pattern>
+            <and>
+                <equal>
+                    <var>request.method</var>
+                    <value>INVITE</value>
+                </equal>
+                <or>
+                    <equal>
+                        <var>request.uri.user</var>
+                        <value>mediaServer</value>
+                    </equal>
+                </or>
+                <equal>
+                    <var>request.uri.scheme</var>
+                    <value>sip</value>
+                </equal>
+            </and>
+        </pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>postGreetingFront</servlet-name>
+        <pattern>
+            <and>
+                <equal>
+                    <var>request.method</var>
+                    <value>INVITE</value>
+                </equal>
+                <or>
+                    <equal>
+                        <var>request.uri.user</var>
+                        <value>postGreeting</value>
+                    </equal>
+                </or>
+                <equal>
+                    <var>request.uri.scheme</var>
+                    <value>sip</value>
+                </equal>
+            </and>
+        </pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>greetingFront</servlet-name>
+        <pattern>
+            <and>
+                <equal>
+                    <var>request.method</var>
+                    <value>INVITE</value>
+                </equal>
+                <contains>
+                    <var>request.uri.user</var>
+                    <value>8867876826</value>
+                </contains>
+                <equal>
+                    <var>request.uri.scheme</var>
+                    <value>sip</value>
+                </equal>
+            </and>
+        </pattern>
+    </servlet-mapping>
+
+
+    <servlet-mapping>
+        <servlet-name>inCallFront</servlet-name>
+        <pattern>
+            <and>
+                <contains>
+                    <var>request.method</var>
+                    <value>INVITE</value>
+                </contains>
+                <equal>
+                    <var>request.uri.scheme</var>
+                    <value>sip</value>
+                </equal>
+                <not>
+                    <exists>
+                        <var>request.uri.param.outboundleg</var>
+                    </exists>
+                </not>
+            </and>
+        </pattern>
+    </servlet-mapping>
+
+
+    <servlet-mapping>
+        <servlet-name>registrar</servlet-name>
+        <pattern>
+            <contains>
+                <var>request.method</var>
+                <value>REGISTER</value>
+            </contains>
+        </pattern>
+    </servlet-mapping>
+
+
+    <!--<servlet-mapping>
+        <servlet-name>mediaServlet</servlet-name>
+        <pattern>
+            <and>
+                <contains>
+                    <var>request.method</var>
+                    <value>REGISTER</value>
+                </contains>
+                <equal ignore-case="true">
+                    <var>request.from.user</var>
+                    <value>opxiIVR</value>
+                </equal>
+            </and>
+        </pattern>
+    </servlet-mapping>-->
+
+
+    <servlet-mapping>
+        <servlet-name>presence</servlet-name>
+        <pattern>
+            <or>
+                <contains>
+                    <var>request.method</var>
+                    <value>PUBLISH</value>
+                </contains>
+                <and>
+                    <!--<not>-->
+                    <!--<equal ignore-case="true">-->
+                    <!--<var>request.to.uri.user</var>-->
+                    <!--<value>opxiCallManager</value>-->
+                    <!--</equal>-->
+                    <!--</not>-->
+                    <equal>
+                        <var>request.method</var>
+                        <value>SUBSCRIBE</value>
+                    </equal>
+                </and>
+                <contains>
+                    <var>request.method</var>
+                    <value>NOTIFY</value>
+                </contains>
+            </or>
+        </pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>mediaServerRobot</servlet-name>
+        <pattern>
+            <and>
+                <equal>
+                    <var>request.method</var>
+                    <value>MESSAGE</value>
+                </equal>
+                <equal>
+                    <var>request.uri.user</var>
+                    <value>opxiCallManager</value>
+                </equal>
+                <equal ignore-case="true">
+                    <var>request.from.user</var>
+                    <value>opxiIVR</value>
+                </equal>
+            </and>
+        </pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>ConfigRobot</servlet-name>
+        <pattern>
+            <and>
+                <equal>
+                    <var>request.method</var>
+                    <value>MESSAGE</value>
+                </equal>
+                <equal>
+                    <var>request.uri.user</var>
+                    <value>opxiCallManager</value>
+                </equal>
+            </and>
+        </pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>IMServlet</servlet-name>
+        <pattern>
+            <and>
+                <equal>
+                    <var>request.method</var>
+                    <value>MESSAGE</value>
+                </equal>
+                <not>
+                    <exists>
+                        <var>request.uri.param.opxiOutBoundB2bua</var>
+                    </exists>
+                </not>
+            </and>
+        </pattern>
+    </servlet-mapping>
+
+    <session-config>
+        <session-timeout>10</session-timeout>
+    </session-config>
+
+</sip-app>

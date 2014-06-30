@@ -1,0 +1,31 @@
+package com.basamad.opxicm.sip.test;
+
+import org.activemq.ActiveMQConnection;
+import org.activemq.ActiveMQConnectionFactory;
+
+import javax.jms.*;
+import javax.servlet.ServletException;
+import javax.servlet.sip.SipServlet;
+
+public class MagicServlet extends SipServlet implements MessageListener {
+	
+	public void init() throws ServletException {
+		try {
+			ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory();
+			connectionFactory.setBrokerURL( ActiveMQConnection.DEFAULT_BROKER_URL );			
+			Connection connection = connectionFactory.createConnection();
+			connection.start();
+			Session session = connection.createSession( false, Session.AUTO_ACKNOWLEDGE );
+			Topic destination = session.createTopic( "opxiTopic" );
+			TopicSubscriber consumer = session.createDurableSubscriber( destination, "naser-" + System.currentTimeMillis() );
+	        consumer.setMessageListener( this );
+		} catch( JMSException e ) {
+			System.out.println( e );
+		}
+	}
+
+	public void onMessage( Message msg ) {
+		System.out.println( "=============== Message received blah blah blah! " );
+	}
+	
+}

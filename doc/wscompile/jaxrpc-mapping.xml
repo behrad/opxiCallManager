@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<java-wsdl-mapping xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.1" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee    http://www.ibm.com/webservices/xsd/j2ee_jaxrpc_mapping_1_1.xsd">
+<package-mapping>
+<package-type>com.basamadco.opxi.callmanager.web.services</package-type>
+<namespaceURI>http://opxi.basamadco.com/callmanager/types</namespaceURI>
+</package-mapping>
+<package-mapping>
+<package-type>com.basamadco.opxi.callmanager.web.services</package-type>
+<namespaceURI>http://opxi.basamadco.com/callmanager/wsdl</namespaceURI>
+</package-mapping>
+<package-mapping>
+<package-type>com.basamadco.opxi.callmanager.web.services._arrays.java.lang</package-type>
+<namespaceURI>http://opxi.basamadco.com/callmanager/types/arrays/java/lang</namespaceURI>
+</package-mapping>
+<service-interface-mapping>
+<service-interface>com.basamadco.opxi.callmanager.web.services.AdminService</service-interface>
+<wsdl-service-name xmlns:serviceNS="http://opxi.basamadco.com/callmanager/wsdl">serviceNS:AdminService</wsdl-service-name>
+<port-mapping>
+<port-name>AdminServicePort</port-name>
+<java-port-name>AdminServicePort</java-port-name>
+</port-mapping>
+</service-interface-mapping>
+<service-endpoint-interface-mapping>
+<service-endpoint-interface>com.basamadco.opxi.callmanager.services.AdminService</service-endpoint-interface>
+<wsdl-port-type xmlns:portTypeNS="http://opxi.basamadco.com/callmanager/wsdl">portTypeNS:AdminService</wsdl-port-type>
+<wsdl-binding xmlns:bindingNS="http://opxi.basamadco.com/callmanager/wsdl">bindingNS:AdminServiceBinding</wsdl-binding>
+<service-endpoint-method-mapping>
+<java-method-name>createAgentProfile</java-method-name>
+<wsdl-operation>createAgentProfile</wsdl-operation>
+<method-param-parts-mapping>
+<param-position>0</param-position>
+<param-type>java.lang.String</param-type>
+<wsdl-message-mapping>
+<wsdl-message xmlns:wsdlMsgNS="http://opxi.basamadco.com/callmanager/wsdl">wsdlMsgNS:AdminService_createAgentProfile</wsdl-message>
+<wsdl-message-part-name>String_1</wsdl-message-part-name>
+<parameter-mode>IN</parameter-mode>
+</wsdl-message-mapping>
+</method-param-parts-mapping>
+</service-endpoint-method-mapping>
+<service-endpoint-method-mapping>
+<java-method-name>createSkillProfile</java-method-name>
+<wsdl-operation>createSkillProfile</wsdl-operation>
+<method-param-parts-mapping>
+<param-position>0</param-position>
+<param-type>java.lang.String</param-type>
+<wsdl-message-mapping>
+<wsdl-message xmlns:wsdlMsgNS="http://opxi.basamadco.com/callmanager/wsdl">wsdlMsgNS:AdminService_createSkillProfile</wsdl-message>
+<wsdl-message-part-name>String_1</wsdl-message-part-name>
+<parameter-mode>IN</parameter-mode>
+</wsdl-message-mapping>
+</method-param-parts-mapping>
+</service-endpoint-method-mapping>
+<service-endpoint-method-mapping>
+<java-method-name>createWorkgroupProfile</java-method-name>
+<wsdl-operation>createWorkgroupProfile</wsdl-operation>
+<method-param-parts-mapping>
+<param-position>0</param-position>
+<param-type>java.lang.String</param-type>
+<wsdl-message-mapping>
+<wsdl-message xmlns:wsdlMsgNS="http://opxi.basamadco.com/callmanager/wsdl">wsdlMsgNS:AdminService_createWorkgroupProfile</wsdl-message>
+<wsdl-message-part-name>String_1</wsdl-message-part-name>
+<parameter-mode>IN</parameter-mode>
+</wsdl-message-mapping>
+</method-param-parts-mapping>
+</service-endpoint-method-mapping>
+<service-endpoint-method-mapping>
+<java-method-name>deleteAgentProfile</java-method-name>
+<wsdl-operation>deleteAgentProfile</wsdl-operation>
+<method-param-parts-mapping>
+<param-position>0</param-position>
+<param-type>java.lang.String</param-type>
+<wsdl-message-mapping>
+<wsdl-message xmlns:wsdlMsgNS="http://opxi.basamadco.com/callmanager/wsdl">wsdlMsgNS:AdminService_deleteAgentProfile</wsdl-message>
+<wsdl-message-part-name>String_1</wsdl-message-part-name>
+<parameter-mode>IN</parameter-mode>
+</wsdl-message-mapping>
+</method-param-parts-mapping>
+</service-endpoint-method-mapping>
+<service-endpoint-method-mapping>
+<java-method-name>deletePoolProfile</java-method-name>
+<wsdl-operation>deletePoolProfile</wsdl-operation>
+<method-param-parts-mapping>
+<param-position>0</param-position>
+<param-type>java.lang.String</param-type>
+<wsdl-message-mapping>
+<wsdl-message xmlns:wsdlMsgNS="http://opxi.basamadco.com/callmanager/wsdl">wsdlMsgNS:AdminService_deletePoolProfile</wsdl-message>
+<wsdl-message-part-name>String_1</wsdl-message-part-name>
+<parameter-mode>IN</parameter-mode>
+</wsdl-message-mapping>
+</method-param-parts-mapping>
+</service-endpoint-method-mapping>
+<service-endpoint-method-mapping>
+<java-method-name>getPoolTypeImplementations</java-method-name>
+<wsdl-operation>getPoolTypeImplementations</wsdl-operation>
+<wsdl-return-value-mapping>
+<method-return-value>java.lang.String[]</method-return-value>
+<wsdl-message xmlns:wsdlMsgNS="http://opxi.basamadco.com/callmanager/wsdl">wsdlMsgNS:AdminService_getPoolTypeImplementationsResponse</wsdl-message>
+<wsdl-message-part-name>result</wsdl-message-part-name>
+</wsdl-return-value-mapping>
+</service-endpoint-method-mapping>
+<service-endpoint-method-mapping>
+<java-method-name>readAgentProfile</java-method-name>
+<wsdl-operation>readAgentProfile</wsdl-operation>
+<method-param-parts-mapping>
+<param-position>0</param-position>
+<param-type>java.lang.String</param-type>
+<wsdl-message-mapping>
+<wsdl-message xmlns:wsdlMsgNS="http://opxi.basamadco.com/callmanager/wsdl">wsdlMsgNS:AdminService_readAgentProfile</wsdl-message>
+<wsdl-message-part-name>String_1</wsdl-message-part-name>
+<parameter-mode>IN</parameter-mode>
+</wsdl-message-mapping>
+</method-param-parts-mapping>
+<wsdl-return-value-mapping>
+<method-return-value>java.lang.String</method-return-value>
+<wsdl-message xmlns:wsdlMsgNS="http://opxi.basamadco.com/callmanager/wsdl">wsdlMsgNS:AdminService_readAgentProfileResponse</wsdl-message>
+<wsdl-message-part-name>result</wsdl-message-part-name>
+</wsdl-return-value-mapping>
+</service-endpoint-method-mapping>
+<service-endpoint-method-mapping>
+<java-method-name>readPoolProfile</java-method-name>
+<wsdl-operation>readPoolProfile</wsdl-operation>
+<method-param-parts-mapping>
+<param-position>0</param-position>
+<param-type>java.lang.String</param-type>
+<wsdl-message-mapping>
+<wsdl-message xmlns:wsdlMsgNS="http://opxi.basamadco.com/callmanager/wsdl">wsdlMsgNS:AdminService_readPoolProfile</wsdl-message>
+<wsdl-message-part-name>String_1</wsdl-message-part-name>
+<parameter-mode>IN</parameter-mode>
+</wsdl-message-mapping>
+</method-param-parts-mapping>
+<wsdl-return-value-mapping>
+<method-return-value>java.lang.String</method-return-value>
+<wsdl-message xmlns:wsdlMsgNS="http://opxi.basamadco.com/callmanager/wsdl">wsdlMsgNS:AdminService_readPoolProfileResponse</wsdl-message>
+<wsdl-message-part-name>result</wsdl-message-part-name>
+</wsdl-return-value-mapping>
+</service-endpoint-method-mapping>
+<service-endpoint-method-mapping>
+<java-method-name>test2DArrays</java-method-name>
+<wsdl-operation>test2DArrays</wsdl-operation>
+<wsdl-return-value-mapping>
+<method-return-value>java.lang.String[][]</method-return-value>
+<wsdl-message xmlns:wsdlMsgNS="http://opxi.basamadco.com/callmanager/wsdl">wsdlMsgNS:AdminService_test2DArraysResponse</wsdl-message>
+<wsdl-message-part-name>result</wsdl-message-part-name>
+</wsdl-return-value-mapping>
+</service-endpoint-method-mapping>
+<service-endpoint-method-mapping>
+<java-method-name>updateAgentProfile</java-method-name>
+<wsdl-operation>updateAgentProfile</wsdl-operation>
+<method-param-parts-mapping>
+<param-position>0</param-position>
+<param-type>java.lang.String</param-type>
+<wsdl-message-mapping>
+<wsdl-message xmlns:wsdlMsgNS="http://opxi.basamadco.com/callmanager/wsdl">wsdlMsgNS:AdminService_updateAgentProfile</wsdl-message>
+<wsdl-message-part-name>String_1</wsdl-message-part-name>
+<parameter-mode>IN</parameter-mode>
+</wsdl-message-mapping>
+</method-param-parts-mapping>
+<method-param-parts-mapping>
+<param-position>1</param-position>
+<param-type>byte[]</param-type>
+<wsdl-message-mapping>
+<wsdl-message xmlns:wsdlMsgNS="http://opxi.basamadco.com/callmanager/wsdl">wsdlMsgNS:AdminService_updateAgentProfile</wsdl-message>
+<wsdl-message-part-name>arrayOfbyte_2</wsdl-message-part-name>
+<parameter-mode>IN</parameter-mode>
+</wsdl-message-mapping>
+</method-param-parts-mapping>
+</service-endpoint-method-mapping>
+<service-endpoint-method-mapping>
+<java-method-name>updatePoolProfile</java-method-name>
+<wsdl-operation>updatePoolProfile</wsdl-operation>
+<method-param-parts-mapping>
+<param-position>0</param-position>
+<param-type>java.lang.String</param-type>
+<wsdl-message-mapping>
+<wsdl-message xmlns:wsdlMsgNS="http://opxi.basamadco.com/callmanager/wsdl">wsdlMsgNS:AdminService_updatePoolProfile</wsdl-message>
+<wsdl-message-part-name>String_1</wsdl-message-part-name>
+<parameter-mode>IN</parameter-mode>
+</wsdl-message-mapping>
+</method-param-parts-mapping>
+<method-param-parts-mapping>
+<param-position>1</param-position>
+<param-type>byte[]</param-type>
+<wsdl-message-mapping>
+<wsdl-message xmlns:wsdlMsgNS="http://opxi.basamadco.com/callmanager/wsdl">wsdlMsgNS:AdminService_updatePoolProfile</wsdl-message>
+<wsdl-message-part-name>arrayOfbyte_2</wsdl-message-part-name>
+<parameter-mode>IN</parameter-mode>
+</wsdl-message-mapping>
+</method-param-parts-mapping>
+</service-endpoint-method-mapping>
+</service-endpoint-interface-mapping>
+</java-wsdl-mapping>

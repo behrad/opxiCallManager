@@ -1,0 +1,31 @@
+package com.basamad.opxicm.logging;
+
+
+public class LogEvent {
+	
+	private LogValueObject valueObject;
+	
+	private CallManagerEvent event;
+
+	public CallManagerEvent getEvent() {
+		return event;
+	}
+
+	public void setEvent(CallManagerEvent event) {
+		this.event = event;
+	}
+
+	public LogValueObject getValueObject() {
+		return valueObject;
+	}
+
+	public void setValueObject(LogValueObject valueObject) {
+		this.valueObject = valueObject;
+	}
+
+	public LogEvent(CallManagerEvent event, LogValueObject valueObject) {
+		this.event = event;
+		this.valueObject = valueObject;
+	}	
+
+}

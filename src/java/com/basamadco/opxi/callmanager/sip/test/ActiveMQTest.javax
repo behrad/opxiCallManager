@@ -1,0 +1,41 @@
+package com.basamad.opxicm.sip.test;
+
+import org.activemq.ActiveMQConnection;
+import org.activemq.ActiveMQConnectionFactory;
+import javax.jms.*;
+
+
+public class ActiveMQTest extends Test {
+
+	public void run() {
+		try {
+			
+//			 configure the connection factory using
+//			 normal Java Bean property methods					
+//			connectionFactory.setUseEmbeddedBroker(true);
+//			 configure the embedded broker using an XML config file
+//			 which is either a URL or a resource on the classpath			
+//			System.out.println( "********************" + ActiveMQConnectionFactory.class.getName().getClassLoader().getResource( "org/activemq/activemq-to-spring.xsl" ) );
+//			connectionFactory.setBrokerXmlConfig( this.getClass().getClassLoader().getResource( "activemq.xml" ).toString() );			
+//			 you only need to configure the broker URL if you wish to change the
+//			 default connection mechanism, which in this test case we do
+			ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory();
+			connectionFactory.setBrokerURL( ActiveMQConnection.DEFAULT_BROKER_URL );			
+			Connection connection = connectionFactory.createConnection();
+			connection.start();
+			Session session = connection.createSession( false, Session.AUTO_ACKNOWLEDGE );
+			String subject = "OpxiCallManager.SUBJECT";
+			Destination destination = session.createTopic( subject );
+			MessageProducer producer = session.createProducer(destination);
+			producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
+			TextMessage message = session.createTextMessage( "Message produced @ " + new java.util.Date() );
+			producer.send( message );
+			System.out.println( new java.util.Date() + " Producer Sending Message:" + message.getText() );
+			connection.stop();
+			
+		} catch( Exception e ) {
+			e.printStackTrace();
+		}
+	}
+
+}

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 2.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd">
+
+<hibernate-mapping
+>
+    <class
+        name="com.basamadco.opxi.callmanager.entity.Subscription"
+    >
+
+        <id
+            name="id"
+            column="id"
+            type="java.lang.String"
+        >
+            <generator class="identity">
+              <!--  
+                  To add non XDoclet generator parameters, create a file named 
+                  hibernate-generator-params-Subscription.xml 
+                  containing the additional parameters and place it in your merge dir. 
+              --> 
+            </generator>
+        </id>
+
+        <property
+            name="event"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="event"
+        />
+
+        <property
+            name="expiry"
+            type="java.util.Date"
+            update="true"
+            insert="true"
+            column="expiry"
+        />
+
+        <many-to-one
+            name="notifier"
+            class="com.basamadco.opxi.callmanager.entity.UserAgent"
+            cascade="none"
+            outer-join="auto"
+            update="true"
+            insert="true"
+            column="notifier"
+        />
+
+        <many-to-one
+            name="subscriber"
+            class="com.basamadco.opxi.callmanager.entity.UserAgent"
+            cascade="none"
+            outer-join="auto"
+            update="true"
+            insert="true"
+            column="subscriber"
+        />
+
+        <property
+            name="sessionId"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="sessionId"
+        />
+
+        <!--
+            To add non XDoclet property mappings, create a file named
+                hibernate-properties-Subscription.xml
+            containing the additional properties and place it in your merge dir.
+        -->
+
+    </class>
+
+</hibernate-mapping>

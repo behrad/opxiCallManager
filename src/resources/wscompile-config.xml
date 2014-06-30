@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!-- 
+  This file is used to point to the wsdl location and also to
+  specify the pakcage name you want to use for the generated source 
+-->
+
+<configuration xmlns="http://java.sun.com/xml/ns/jax-rpc/ri/config">
+    <service name="AdminService"
+            targetNamespace="http://opxi.basamadco.com/callmanager/services"
+            typeNamespace="http://opxi.basamadco.com/callmanager/services"
+            packageName="com.basamadco.opxi.callmanager.web.services">
+
+        <interface  name="com.basamadco.opxi.callmanager.services.AdminService"
+                    servantName="com.basamadco.opxi.callmanager.web.services.AdminServiceImpl"/>
+    </service>
+</configuration> 

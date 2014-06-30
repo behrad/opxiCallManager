@@ -1,0 +1,99 @@
+<!--<?xml version="1.0"?>-->
+
+<!--<!DOCTYPE matching-rule [-->
+
+<!ENTITY % condition "and | or | not | equal | contains | exists | subdomain-of">
+
+<!ENTITY % opr "request | group | literal">
+
+<!ELEMENT matching-rule (%condition;)>
+
+<!--
+An "and" condition is true if and only if all its constituent conditions
+are true.
+-->
+
+<!ELEMENT and (%condition;)+>
+
+<!--
+An "or" condition is true if at least one of its constituent conditions
+is true.
+-->
+
+<!ELEMENT or (%condition;)+>
+
+<!--
+Negates the group-var of the contained condition.
+-->
+
+<!ELEMENT not (%condition;)>
+
+<!--
+True if the group-var of the request-variable equals the specified literal group-var.
+-->
+
+<!ELEMENT equal (%opr;)+>
+
+<!--
+True if the group-var of the request-variable contains the specified literal group-var.
+-->
+
+<!ELEMENT contains (%opr;)+>
+
+<!--
+True if the specified request-variable exists.
+-->
+
+<!--<!ELEMENT exists (request)>-->
+
+<!--
+-->
+
+<!ELEMENT subdomain-of (%opr;)+>
+
+<!--
+Specifies a request-variable. Example:
+  <request-var>request.uri.user</request-var>
+-->
+
+<!ELEMENT request EMPTY>
+
+<!--
+Specifies a literal string group-var that is used to specify rules.
+-->
+
+<!ELEMENT group EMPTY>
+
+
+<!ELEMENT literal EMPTY>
+
+<!--
+Specifies whether the "equal" test is case sensitive or not.
+-->
+
+<!ATTLIST equal ignore-case (true|false) "false">
+
+<!ATTLIST request attribute CDATA #REQUIRED>
+
+<!ATTLIST group   attribute CDATA #REQUIRED>
+
+<!ATTLIST literal  value CDATA #REQUIRED>
+
+<!--
+Specifies whether the "contains" test is case sensitive or not.
+-->
+
+<!ATTLIST contains ignore-case (true|false) "false">
+
+<!ATTLIST matching-rule id ID #IMPLIED>
+<!ATTLIST and id ID #IMPLIED>
+<!ATTLIST or id ID #IMPLIED>
+<!ATTLIST not id ID #IMPLIED>
+<!ATTLIST equal id ID #IMPLIED>
+<!ATTLIST contains id ID #IMPLIED>
+<!ATTLIST exists id ID #IMPLIED>
+<!ATTLIST subdomain-of id ID #IMPLIED>
+<!ATTLIST request id ID #IMPLIED>
+<!ATTLIST group id ID #IMPLIED>
+
+<!--]>-->

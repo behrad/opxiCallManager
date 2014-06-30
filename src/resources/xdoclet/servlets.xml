@@ -1,0 +1,173 @@
+<servlet>
+    <servlet-name>opxiCallManager</servlet-name>
+    <servlet-class>com.basamadco.opxi.callmanager.sip.CallManagerAppLoader</servlet-class>
+    <load-on-startup>1</load-on-startup>
+</servlet>
+
+        <!--<servlet>-->
+        <!--<servlet-name>greetingFront</servlet-name>-->
+        <!--<servlet-class>com.basamadco.opxi.callmanager.sip.front.GreetingFront</servlet-class>-->
+        <!--</servlet>-->
+        <!--<servlet>-->
+        <!--<servlet-name>postGreetingFront</servlet-name>-->
+        <!--<servlet-class>com.basamadco.opxi.callmanager.sip.front.PostGreetingFront</servlet-class>-->
+        <!--</servlet>-->
+        <!--<servlet>-->
+        <!--<servlet-name>mediaFront</servlet-name>-->
+        <!--<servlet-class>com.basamadco.opxi.callmanager.sip.front.MediaFront</servlet-class>-->
+        <!--</servlet>-->
+        <!--<servlet>-->
+        <!--<servlet-name>outCallFront</servlet-name>-->
+        <!--<servlet-class>com.basamadco.opxi.callmanager.sip.front.OutboundCallFront</servlet-class>-->
+        <!--</servlet>-->
+        <!--<servlet>-->
+        <!--<servlet-name>inCallFront</servlet-name>-->
+        <!--<servlet-class>com.basamadco.opxi.callmanager.sip.front.InCallFront</servlet-class>-->
+        <!--</servlet>-->
+        <!--<servlet>-->
+        <!--<servlet-name>greetingServlet</servlet-name>-->
+        <!--<servlet-class>com.basamadco.opxi.callmanager.sip.b2bua.greeting.GreetingServlet</servlet-class>-->
+        <!--</servlet>-->
+        <!--<servlet>-->
+        <!--<servlet-name>postGreetingServlet</servlet-name>-->
+        <!--<servlet-class>com.basamadco.opxi.callmanager.sip.b2bua.greeting.PostGreetingServlet</servlet-class>-->
+        <!--</servlet>-->
+        <!--<servlet>-->
+        <!--<servlet-name>queued</servlet-name>-->
+        <!--<servlet-class>com.basamadco.opxi.callmanager.sip.b2bua.waiting.QueuedServlet</servlet-class>-->
+        <!--</servlet>-->
+        <!--<servlet>-->
+        <!--<servlet-name>mediaServlet</servlet-name>-->
+        <!--<servlet-class>com.basamadco.opxi.callmanager.sip.b2bua.MediaServlet</servlet-class>-->
+        <!--</servlet>-->
+        <!--<servlet>-->
+        <!--<servlet-name>queue</servlet-name>-->
+        <!--<servlet-class>com.basamadco.opxi.callmanager.sip.queue.QueueServlet</servlet-class>-->
+        <!--</servlet>-->
+        <!--<servlet>-->
+        <!--<servlet-name>SystemPresence</servlet-name>-->
+        <!--<servlet-class>com.basamadco.opxi.callmanager.sip.presence.CallManagerPresence</servlet-class>-->
+        <!--</servlet>-->
+        <!--<servlet>-->
+        <!--<servlet-name>presence</servlet-name>-->
+        <!--<servlet-class>com.basamadco.opxi.callmanager.sip.presence.PresenceServlet</servlet-class>-->
+        <!--</servlet>-->
+        <!--<servlet>-->
+        <!--<servlet-name>proxy</servlet-name>-->
+        <!--<servlet-class>com.basamadco.opxi.callmanager.sip.proxy.ProxyServlet</servlet-class>-->
+        <!--</servlet>-->
+        <!--<servlet>-->
+        <!--<servlet-name>ConfigRobot</servlet-name>-->
+        <!--<servlet-class>com.basamadco.opxi.callmanager.sip.im.ConfigRobot</servlet-class>-->
+        <!--</servlet>-->
+        <!--<servlet>-->
+        <!--<servlet-name>IMServlet</servlet-name>-->
+        <!--<servlet-class>com.basamadco.opxi.callmanager.sip.im.IMServlet</servlet-class>-->
+        <!--</servlet>-->
+        <!--<servlet>-->
+        <!--<servlet-name>registrar</servlet-name>-->
+        <!--<servlet-class>com.basamadco.opxi.callmanager.sip.registrar.RegistrarServlet</servlet-class>-->
+        <!--</servlet>-->
+        <!--<servlet>-->
+        <!--<servlet-name>testServlet</servlet-name>-->
+        <!--<servlet-class>com.basamadco.opxi.callmanager.sip.test.TestServlet</servlet-class>-->
+        <!--</servlet>-->
+        <!--<servlet>-->
+        <!--<servlet-name>B2BVoiceAppServlet</servlet-name>-->
+        <!--<servlet-class>com.basamadco.opxi.callmanager.sip.b2bua.machines.B2BVoiceAppServlet</servlet-class>-->
+        <!--</servlet>-->
+
+
+        <!--<servlet>
+        <servlet-name>AxisServlet</servlet-name>
+        <servlet-class>org.apache.axis.transport.http.AxisServlet</servlet-class>
+        </servlet>
+
+        <servlet>
+        <servlet-name>AdminServlet</servlet-name>
+        <servlet-class>org.apache.axis.transport.http.AdminServlet</servlet-class>
+        <load-on-startup/>
+        </servlet>
+
+        <servlet>
+        <servlet-name>SOAPMonitorService</servlet-name>
+        <servlet-class>org.apache.axis.monitor.SOAPMonitorService</servlet-class>
+        <init-param>
+        <param-name>SOAPMonitorPort</param-name>
+        <param-value>5001</param-value>
+        </init-param>
+        <load-on-startup/>
+        </servlet>-->
+
+<servlet>
+<servlet-name>WaitingRoomReport</servlet-name>
+<servlet-class>com.basamadco.opxi.callmanager.web.WaitingRoomReportServlet</servlet-class>
+</servlet>
+
+<servlet>
+<servlet-name>waitingVXML</servlet-name>
+<servlet-class>com.basamadco.opxi.callmanager.web.vxml.WaitingRoomVxmlServlet</servlet-class>
+<init-param>
+    <param-name>defaultVXML</param-name>
+    <param-value>voice.xml</param-value>
+</init-param>
+</servlet>
+
+<servlet>
+<servlet-name>greetingVXML</servlet-name>
+<servlet-class>com.basamadco.opxi.callmanager.web.vxml.GreetingVxmlServlet</servlet-class>
+<init-param>
+    <param-name>defaultVXML</param-name>
+    <param-value>voice.xml</param-value>
+</init-param>
+</servlet>
+
+<servlet>
+<servlet-name>webTransfer</servlet-name>
+<servlet-class>com.basamadco.opxi.callmanager.web.WebTransfer</servlet-class>
+</servlet>
+
+<servlet>
+<servlet-name>webIMServlet</servlet-name>
+<servlet-class>com.basamadco.opxi.callmanager.web.WebIMServlet</servlet-class>
+</servlet>
+
+<servlet>
+<servlet-name>agentReportServlet</servlet-name>
+<servlet-class>com.basamadco.opxi.callmanager.web.AgentReportServlet</servlet-class>
+</servlet>
+
+<servlet>
+<servlet-name>AgentPollingServlet</servlet-name>
+<servlet-class>com.basamadco.opxi.callmanager.web.AgentPollingServlet</servlet-class>
+</servlet>
+
+<servlet>
+<servlet-name>ALServlet</servlet-name>
+<servlet-class>com.basamadco.opxi.callmanager.web.ActivityLogServlet</servlet-class>
+</servlet>
+
+        <!-- Standard Action Servlet Configuration (with debugging) -->
+        <!--<servlet>-->
+        <!--<servlet-name>webAppController</servlet-name>-->
+        <!--<servlet-class>org.apache.struts.action.ActionServlet</servlet-class>-->
+        <!--<init-param>-->
+        <!--<param-name>config</param-name>-->
+        <!--<param-value>/WEB-INF/struts-config.xml</param-value>-->
+        <!--</init-param>-->
+        <!--<init-param>-->
+        <!--<param-name>debug</param-name>-->
+        <!--<param-value>2</param-value>-->
+        <!--</init-param>-->
+        <!--<init-param>-->
+        <!--<param-name>detail</param-name>-->
+        <!--<param-value>2</param-value>-->
+        <!--</init-param>-->
+        <!--<load-on-startup>2</load-on-startup>-->
+        <!--</servlet>-->
+
+
+<servlet>
+<servlet-name>A2CBridge</servlet-name>
+<servlet-class>com.basamadco.opxi.callmanager.web.A2CBridge</servlet-class>
+</servlet>

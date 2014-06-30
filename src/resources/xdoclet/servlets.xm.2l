@@ -1,0 +1,83 @@
+        <!--<servlet>
+        <servlet-name>AxisServlet</servlet-name>
+        <servlet-class>org.apache.axis.transport.http.AxisServlet</servlet-class>
+        </servlet>
+
+        <servlet>
+        <servlet-name>AdminServlet</servlet-name>
+        <servlet-class>org.apache.axis.transport.http.AdminServlet</servlet-class>
+        <load-on-startup/>
+        </servlet>
+
+        <servlet>
+        <servlet-name>SOAPMonitorService</servlet-name>
+        <servlet-class>org.apache.axis.monitor.SOAPMonitorService</servlet-class>
+        <init-param>
+        <param-name>SOAPMonitorPort</param-name>
+        <param-value>5001</param-value>
+        </init-param>
+        <load-on-startup/>
+        </servlet>-->
+
+<servlet>
+    <servlet-name>waitingVXML</servlet-name>
+    <servlet-class>com.basamadco.opxi.callmanager.web.vxml.WaitingRoomVxmlServlet</servlet-class>
+    <init-param>
+        <param-name>defaultVXML</param-name>
+        <param-value>voice.xml</param-value>
+    </init-param>
+</servlet>
+
+<servlet>
+    <servlet-name>greetingVXML</servlet-name>
+    <servlet-class>com.basamadco.opxi.callmanager.web.vxml.GreetingVxmlServlet</servlet-class>
+    <init-param>
+        <param-name>defaultVXML</param-name>
+        <param-value>voice.xml</param-value>
+    </init-param>
+</servlet>
+
+<servlet>
+    <servlet-name>opxiHttpServlet</servlet-name>
+    <servlet-class>com.basamadco.opxi.callmanager.web.OpxiHttpServlet</servlet-class>
+</servlet>        
+
+<servlet>
+    <servlet-name>webTransfer</servlet-name>
+    <servlet-class>com.basamadco.opxi.callmanager.web.WebTransfer</servlet-class>
+</servlet>
+
+<servlet>
+    <servlet-name>webIMServlet</servlet-name>
+    <servlet-class>com.basamadco.opxi.callmanager.web.WebIMServlet</servlet-class>
+</servlet>
+
+<servlet>
+    <servlet-name>ALServlet</servlet-name>
+    <servlet-class>com.basamadco.opxi.callmanager.web.ActivityLogServlet</servlet-class>
+</servlet>
+
+        <!-- Standard Action Servlet Configuration (with debugging) -->
+<servlet>
+    <servlet-name>webAppController</servlet-name>
+    <servlet-class>org.apache.struts.action.ActionServlet</servlet-class>
+    <init-param>
+        <param-name>config</param-name>
+        <param-value>/WEB-INF/struts-config.xml</param-value>
+    </init-param>
+    <init-param>
+        <param-name>debug</param-name>
+        <param-value>2</param-value>
+    </init-param>
+    <init-param>
+        <param-name>detail</param-name>
+        <param-value>2</param-value>
+    </init-param>
+    <load-on-startup>2</load-on-startup>
+</servlet>
+
+
+<servlet>
+    <servlet-name>A2CBridge</servlet-name>
+    <servlet-class>com.basamadco.opxi.callmanager.web.A2CBridge</servlet-class>
+</servlet>

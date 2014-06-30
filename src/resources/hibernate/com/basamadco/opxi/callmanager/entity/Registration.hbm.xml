@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 2.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd">
+
+<hibernate-mapping
+>
+    <class
+        name="com.basamadco.opxi.callmanager.entity.Registration"
+    >
+
+        <id
+            name="id"
+            column="id"
+            type="java.lang.String"
+        >
+            <generator class="identity">
+              <!--  
+                  To add non XDoclet generator parameters, create a file named 
+                  hibernate-generator-params-Registration.xml 
+                  containing the additional parameters and place it in your merge dir. 
+              --> 
+            </generator>
+        </id>
+
+        <property
+            name="expiry"
+            type="java.util.Date"
+            update="true"
+            insert="true"
+            column="expiry"
+        />
+
+        <property
+            name="location"
+            type="javax.servlet.sip.Address"
+            update="true"
+            insert="true"
+            column="location"
+        />
+
+        <property
+            name="submission"
+            type="java.util.Date"
+            update="true"
+            insert="true"
+            column="submission"
+        />
+
+        <many-to-one
+            name="userAgent"
+            class="com.basamadco.opxi.callmanager.entity.UserAgent"
+            cascade="none"
+            outer-join="auto"
+            update="true"
+            insert="true"
+            column="userAgent"
+        />
+
+        <!--
+            To add non XDoclet property mappings, create a file named
+                hibernate-properties-Registration.xml
+            containing the additional properties and place it in your merge dir.
+        -->
+
+    </class>
+
+</hibernate-mapping>

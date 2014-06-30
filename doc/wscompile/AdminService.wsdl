@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<definitions name="AdminService" targetNamespace="http://opxi.basamadco.com/callmanager/wsdl" xmlns:tns="http://opxi.basamadco.com/callmanager/wsdl" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ns2="http://opxi.basamadco.com/callmanager/types/arrays/java/lang" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <types>
+    <schema targetNamespace="http://opxi.basamadco.com/callmanager/types/arrays/java/lang" xmlns:tns="http://opxi.basamadco.com/callmanager/types/arrays/java/lang" xmlns:soap11-enc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns="http://www.w3.org/2001/XMLSchema">
+      <complexType name="StringArray">
+        <sequence>
+          <element name="value" type="string" nillable="true" minOccurs="0" maxOccurs="unbounded"/></sequence></complexType>
+      <complexType name="StringArrayArray">
+        <sequence>
+          <element name="value" type="tns:StringArray" minOccurs="0" maxOccurs="unbounded"/></sequence></complexType></schema></types>
+  <message name="AdminService_createAgentProfile">
+    <part name="String_1" type="xsd:string"/></message>
+  <message name="AdminService_createAgentProfileResponse"/>
+  <message name="AdminService_createSkillProfile">
+    <part name="String_1" type="xsd:string"/></message>
+  <message name="AdminService_createSkillProfileResponse"/>
+  <message name="AdminService_createWorkgroupProfile">
+    <part name="String_1" type="xsd:string"/></message>
+  <message name="AdminService_createWorkgroupProfileResponse"/>
+  <message name="AdminService_deleteAgentProfile">
+    <part name="String_1" type="xsd:string"/></message>
+  <message name="AdminService_deleteAgentProfileResponse"/>
+  <message name="AdminService_deletePoolProfile">
+    <part name="String_1" type="xsd:string"/></message>
+  <message name="AdminService_deletePoolProfileResponse"/>
+  <message name="AdminService_getPoolTypeImplementations"/>
+  <message name="AdminService_getPoolTypeImplementationsResponse">
+    <part name="result" type="ns2:StringArray"/></message>
+  <message name="AdminService_readAgentProfile">
+    <part name="String_1" type="xsd:string"/></message>
+  <message name="AdminService_readAgentProfileResponse">
+    <part name="result" type="xsd:string"/></message>
+  <message name="AdminService_readPoolProfile">
+    <part name="String_1" type="xsd:string"/></message>
+  <message name="AdminService_readPoolProfileResponse">
+    <part name="result" type="xsd:string"/></message>
+  <message name="AdminService_test2DArrays"/>
+  <message name="AdminService_test2DArraysResponse">
+    <part name="result" type="ns2:StringArrayArray"/></message>
+  <message name="AdminService_updateAgentProfile">
+    <part name="String_1" type="xsd:string"/>
+    <part name="arrayOfbyte_2" type="xsd:base64Binary"/></message>
+  <message name="AdminService_updateAgentProfileResponse"/>
+  <message name="AdminService_updatePoolProfile">
+    <part name="String_1" type="xsd:string"/>
+    <part name="arrayOfbyte_2" type="xsd:base64Binary"/></message>
+  <message name="AdminService_updatePoolProfileResponse"/>
+  <portType name="AdminService">
+    <operation name="createAgentProfile" parameterOrder="String_1">
+      <input message="tns:AdminService_createAgentProfile"/>
+      <output message="tns:AdminService_createAgentProfileResponse"/></operation>
+    <operation name="createSkillProfile" parameterOrder="String_1">
+      <input message="tns:AdminService_createSkillProfile"/>
+      <output message="tns:AdminService_createSkillProfileResponse"/></operation>
+    <operation name="createWorkgroupProfile" parameterOrder="String_1">
+      <input message="tns:AdminService_createWorkgroupProfile"/>
+      <output message="tns:AdminService_createWorkgroupProfileResponse"/></operation>
+    <operation name="deleteAgentProfile" parameterOrder="String_1">
+      <input message="tns:AdminService_deleteAgentProfile"/>
+      <output message="tns:AdminService_deleteAgentProfileResponse"/></operation>
+    <operation name="deletePoolProfile" parameterOrder="String_1">
+      <input message="tns:AdminService_deletePoolProfile"/>
+      <output message="tns:AdminService_deletePoolProfileResponse"/></operation>
+    <operation name="getPoolTypeImplementations">
+      <input message="tns:AdminService_getPoolTypeImplementations"/>
+      <output message="tns:AdminService_getPoolTypeImplementationsResponse"/></operation>
+    <operation name="readAgentProfile" parameterOrder="String_1">
+      <input message="tns:AdminService_readAgentProfile"/>
+      <output message="tns:AdminService_readAgentProfileResponse"/></operation>
+    <operation name="readPoolProfile" parameterOrder="String_1">
+      <input message="tns:AdminService_readPoolProfile"/>
+      <output message="tns:AdminService_readPoolProfileResponse"/></operation>
+    <operation name="test2DArrays">
+      <input message="tns:AdminService_test2DArrays"/>
+      <output message="tns:AdminService_test2DArraysResponse"/></operation>
+    <operation name="updateAgentProfile" parameterOrder="String_1 arrayOfbyte_2">
+      <input message="tns:AdminService_updateAgentProfile"/>
+      <output message="tns:AdminService_updateAgentProfileResponse"/></operation>
+    <operation name="updatePoolProfile" parameterOrder="String_1 arrayOfbyte_2">
+      <input message="tns:AdminService_updatePoolProfile"/>
+      <output message="tns:AdminService_updatePoolProfileResponse"/></operation></portType>
+  <binding name="AdminServiceBinding" type="tns:AdminService">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="rpc"/>
+    <operation name="createAgentProfile">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal" namespace="http://opxi.basamadco.com/callmanager/wsdl"/></input>
+      <output>
+        <soap:body use="literal" namespace="http://opxi.basamadco.com/callmanager/wsdl"/></output></operation>
+    <operation name="createSkillProfile">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal" namespace="http://opxi.basamadco.com/callmanager/wsdl"/></input>
+      <output>
+        <soap:body use="literal" namespace="http://opxi.basamadco.com/callmanager/wsdl"/></output></operation>
+    <operation name="createWorkgroupProfile">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal" namespace="http://opxi.basamadco.com/callmanager/wsdl"/></input>
+      <output>
+        <soap:body use="literal" namespace="http://opxi.basamadco.com/callmanager/wsdl"/></output></operation>
+    <operation name="deleteAgentProfile">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal" namespace="http://opxi.basamadco.com/callmanager/wsdl"/></input>
+      <output>
+        <soap:body use="literal" namespace="http://opxi.basamadco.com/callmanager/wsdl"/></output></operation>
+    <operation name="deletePoolProfile">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal" namespace="http://opxi.basamadco.com/callmanager/wsdl"/></input>
+      <output>
+        <soap:body use="literal" namespace="http://opxi.basamadco.com/callmanager/wsdl"/></output></operation>
+    <operation name="getPoolTypeImplementations">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal" namespace="http://opxi.basamadco.com/callmanager/wsdl"/></input>
+      <output>
+        <soap:body use="literal" namespace="http://opxi.basamadco.com/callmanager/wsdl"/></output></operation>
+    <operation name="readAgentProfile">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal" namespace="http://opxi.basamadco.com/callmanager/wsdl"/></input>
+      <output>
+        <soap:body use="literal" namespace="http://opxi.basamadco.com/callmanager/wsdl"/></output></operation>
+    <operation name="readPoolProfile">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal" namespace="http://opxi.basamadco.com/callmanager/wsdl"/></input>
+      <output>
+        <soap:body use="literal" namespace="http://opxi.basamadco.com/callmanager/wsdl"/></output></operation>
+    <operation name="test2DArrays">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal" namespace="http://opxi.basamadco.com/callmanager/wsdl"/></input>
+      <output>
+        <soap:body use="literal" namespace="http://opxi.basamadco.com/callmanager/wsdl"/></output></operation>
+    <operation name="updateAgentProfile">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal" namespace="http://opxi.basamadco.com/callmanager/wsdl"/></input>
+      <output>
+        <soap:body use="literal" namespace="http://opxi.basamadco.com/callmanager/wsdl"/></output></operation>
+    <operation name="updatePoolProfile">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal" namespace="http://opxi.basamadco.com/callmanager/wsdl"/></input>
+      <output>
+        <soap:body use="literal" namespace="http://opxi.basamadco.com/callmanager/wsdl"/></output></operation></binding>
+  <service name="AdminService">
+    <port name="AdminServicePort" binding="tns:AdminServiceBinding">
+      <soap:address location="REPLACE_WITH_ACTUAL_URL"/></port></service></definitions>

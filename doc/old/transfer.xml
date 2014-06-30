@@ -1,0 +1,17 @@
+<vxml version="2.0" xmlns="http://www.w3.org/2001/vxml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.w3.org/2001/vxml http://www.w3.org/TR/voicexml20/vxml.xsd">
+
+    <form id="form1">
+        <block>
+            <prompt>
+                <audio src="http://opxiMasterServer/opxiCallManager/Greeting.vox"/>
+            </prompt>
+        </block>
+        <transfer dest="sip:postGreeting@cc.basamad.acc;agentURI=sip:agent01@cc.basamad.acc"
+                bridge="true"
+                transferaudio="http://opxiMasterServer/opxiCallManager/melody.vox">
+        </transfer>
+    </form>
+
+
+</vxml>
